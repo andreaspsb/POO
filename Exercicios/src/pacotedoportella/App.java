@@ -14,7 +14,9 @@ public class App {
         System.out.println("Escolha uma opção:");
         System.out.println("1. Cadastrar História em Quadrinhos");
         System.out.println("2. Pesquisar História em Quadrinhos");
-        System.out.println("3. Sair");
+        System.out.println("3. Exibir Todas as Histórias Cadastradas");
+        System.out.println("4. Sair");
+        System.out.println("Escolha uma opção:");
 
         // Lê a opção escolhida pelo usuário
         int opcao = scanner.nextInt();
