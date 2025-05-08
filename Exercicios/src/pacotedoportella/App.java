@@ -1,8 +1,12 @@
 import java.util.List;
 
 public class App {
-    //sistema para cadastrasr histórias em quadrinhos
+    static List<HistoriaQuadrinhos> historias;
+
+    // sistema para cadastrasr histórias em quadrinhos
     public static void main(String[] args) {
+        historias = new java.util.ArrayList<>();
+
         // Criação do objeto Scanner para ler a entrada do usuário
         java.util.Scanner scanner = new java.util.Scanner(System.in);
 
@@ -26,6 +30,10 @@ public class App {
                 pesquisarHistoriaQuadrinhos();
                 break;
             case 3:
+                // Chama o método para exibir todas as histórias cadastradas
+                exibirHistoriasCadastradas();
+                break;
+            case 4:
                 // Encerra o programa
                 System.out.println("Saindo...");
                 break;
@@ -37,6 +45,7 @@ public class App {
         // Fecha o scanner
         scanner.close();
     }
+
     // Método para cadastrar história em quadrinhos
     public static void cadastrarHistoriaQuadrinhos() {
         // Lógica para cadastrar história em quadrinhos
@@ -53,12 +62,66 @@ public class App {
         int anoPublicacao = scanner.nextInt();
         System.out.print("Digite o gênero da história: ");
         String genero = scanner.nextLine();
-        // Aqui você pode adicionar a lógica para armazenar as informações em uma lista ou banco de dados
-        List<HistoriaQuadrinhos> historias = new java.util.ArrayList<>();
+        // Aqui você pode adicionar a lógica para armazenar as informações em uma lista
+        // ou banco de dados
+        // List<HistoriaQuadrinhos> historias = new java.util.ArrayList<>();
         HistoriaQuadrinhos historia = new HistoriaQuadrinhos(titulo, autor, anoPublicacao, genero);
         historias.add(historia);
         System.out.println("História em quadrinhos cadastrada com sucesso!");
 
         // Exemplo de impressão das informações cadastradas
+    }
+
+    public static void pesquisarHistoriaQuadrinhos() {
+        // Lógica para pesquisar história em quadrinhos
+        System.out.println("Pesquisar História em Quadrinhos");
+        // Aqui você pode adicionar a lógica para pesquisar a história em quadrinhos
+        // Exemplo: solicitar informações ao usuário, buscar na lista, etc.
+        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        System.out.print("Digite o título da história que deseja pesquisar: ");
+        String titulo = scanner.nextLine();
+        // Aqui você pode adicionar a lógica para buscar as informações na lista ou
+        // banco de dados
+        // Exemplo de busca na lista (supondo que você tenha uma lista de histórias
+        // cadastradas)
+        for (HistoriaQuadrinhos historia : historias) {
+            if (historia.toString().contains(titulo)) {
+                System.out.println("História em quadrinhos encontrada: " + titulo);
+                System.out.println(historia);
+            }
+        }
+        // Se a história não for encontrada, exibe uma mensagem
+        if (historias.stream().noneMatch(h -> h.toString().contains(titulo))) {
+            System.out.println("História em quadrinhos não encontrada.");
+        }
+    }
+
+    // Método para exibir todas as histórias cadastradas
+    public static void exibirHistoriasCadastradas() {
+        System.out.println("Histórias em quadrinhos cadastradas:");
+        for (HistoriaQuadrinhos historia : historias) {
+            System.out.println(historia);
+        }
+    }
+
+    // Classe para representar uma história em quadrinhos
+    static class HistoriaQuadrinhos {
+        private String titulo;
+        private String autor;
+        private int anoPublicacao;
+        private String genero;
+
+        public HistoriaQuadrinhos(String titulo, String autor, int anoPublicacao, String genero) {
+            this.titulo = titulo;
+            this.autor = autor;
+            this.anoPublicacao = anoPublicacao;
+            this.genero = genero;
+        }
+
+        @Override
+        public String toString() {
+            return "Título: " + titulo + ", Autor: " + autor + ", Ano de Publicação: " + anoPublicacao + ", Gênero: "
+                    + genero;
+        }
     }
 }
