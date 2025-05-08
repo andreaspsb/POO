@@ -1,4 +1,8 @@
 import java.util.Random;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.URI;
 
 public class MenorOuMaior implements Jogo {
 
@@ -6,6 +10,7 @@ public class MenorOuMaior implements Jogo {
 
         System.out.println("Executando o jogo Menor ou Maior...");
         // Lógica do jogo Menor ou Maior
+        // ...
 
         Random gerador = new Random();
         int numeroAleatorio = gerador.nextInt(100) + 1; // Número aleatório entre 1 e 100
@@ -50,7 +55,14 @@ public class MenorOuMaior implements Jogo {
             resultadoEnum = EResultado.DESISTENCIA;
         }
 
-        Resultado resultado = new Resultado("Menor ou Maior", resultadoEnum, tentativas, numeroAleatorio);
+        int idade = null; // Aqui você pode adicionar lógica para obter a idade do jogador, se necessário
+        System.out.println("Digite sua idade: ");
+        idade = new java.util.Scanner(System.in).nextInt();
+        Resultado resultado = new Resultado("Menor ou Maior", resultadoEnum, tentativas, numeroAleatorio, idade);
+        // Aqui você pode adicionar lógica para imprimir o resultado, se necessário
+        // Exemplo de impressão do resultado
+        // System.out.println(resultado.imprimirResultado());
+        Resultado resultado = new Resultado("Menor ou Maior", resultadoEnum, tentativas, numeroAleatorio,);
         return resultado;
         
         /*System.out.println(resultado);
@@ -66,4 +78,59 @@ public class MenorOuMaior implements Jogo {
             System.out.println("Saindo do jogo Menor ou Maior...");
         }*/
     }
+    
+    public String pesquisarNaInternetSantoDoDia () {
+        httpreq = new HttpRequest();
+        httpreq.setUrl("https://www.google.com/search?q=santo+do+dia");
+        httpreq.setMethod("GET");
+        httpreq.setHeaders("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3");
+        httpreq.setHeaders("Accept-Language", "en-US,en;q=0.5");
+        httpreq.setHeaders("Accept-Encoding", "gzip, deflate, br");
+        httpreq.setHeaders("Connection", "keep-alive");
+        httpreq.setHeaders("Upgrade-Insecure-Requests", "1");
+        httpreq.setHeaders("Cache-Control", "max-age=0");
+        httpreq.setHeaders("Pragma", "no-cache");
+        httpreq.setHeaders("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+        httpreq.setHeaders("DNT", "1");
+        //retornar os dados do santo do dia
+        // Aqui você pode adicionar lógica para processar a resposta da requisição
+        // Exemplo de impressão da resposta
+        // System.out.println(httpreq.getResponse());
+        //capturar os 30 caracteres seguintes à palavra "santo do dia"
+        // String resposta = httpreq.getResponse();
+        // String santoDoDia = resposta.substring(resposta.indexOf("santo do dia") + 30, resposta.indexOf("santo do dia") + 60);
+        // Utilize uma biblioteca HTTP para realizar a requisição, como HttpClient
+
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.copilot.microsoft.com/santo-do-dia"))
+                    .header("Accept", "application/json")
+                    .header("Authorization", "Bearer YOUR_API_KEY") // Substitua pela sua chave de API
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                // Processar a resposta JSON
+                String jsonResponse = response.body();
+                // Aqui você pode usar uma biblioteca como Jackson ou Gson para processar o JSON
+                System.out.println("Resposta da API: " + jsonResponse);
+                // Exemplo de processamento simples
+                // String santoDoDia = jsonResponse.substring(jsonResponse.indexOf("santo do dia") + 30, jsonResponse.indexOf("santo do dia") + 60);
+                //vamos tratar com Jackson
+                // ObjectMapper objectMapper = new ObjectMapper();
+                // JsonNode jsonNode = objectMapper.readTree(jsonResponse);
+                // String santoDoDia = jsonNode.get("santo").asText();
+                // System.out.println("Santo do dia: " + santoDoDia);
+                return jsonResponse; // Retorna o santo do dia
+            } else {
+                System.out.println("Erro ao buscar o santo do dia. Código de status: " + response.statusCode());
+            }
+        } catch (Exception e) {
+            System.out.println("Erro ao realizar a requisição: " + e.getMessage());
+        }
+        return "https://www.google.com/search?q=santo+do+dia";
+    }
+
 }
