@@ -1,0 +1,3 @@
+Chamado{cliente='Cliente A', descricao='Problema com o produto', urgencia=ALTA, status=ABERTO}
+Chamado{cliente='Cliente B', descricao='Dúvida sobre o serviço', urgencia=MEDIA, status=EM_ATENDIMENTO}
+Chamado{cliente='Cliente C', descricao='Reclamação sobre o atendimento', urgencia=BAIXA, status=RESOLVIDO}
