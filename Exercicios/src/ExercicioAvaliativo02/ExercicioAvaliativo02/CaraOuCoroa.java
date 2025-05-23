@@ -1,12 +1,17 @@
+package ExercicioAvaliativo02;
+
+import java.util.Scanner;
+
 public class CaraOuCoroa implements Jogo {
 
     @Override
-    public Resultado executar() {
+    public Resultado executar(Scanner scanner) {
         System.out.println("Executando o jogo Cara ou Coroa...");
         // Lógica do jogo Cara ou Coroa
         // ...
         // Exemplo de implementação simples
         String[] opcoes = { "Cara", "Coroa" };
+        String escolha = "";
         int resultado = (int) (Math.random() * 2); // 0 ou 1
         String resultadoJogo = opcoes[resultado];
         boolean acertou;
@@ -14,7 +19,7 @@ public class CaraOuCoroa implements Jogo {
 
         while (jogoValido) {
             System.out.println("Escolha: Cara ou Coroa?");
-            String escolha = new java.util.Scanner(System.in).next();
+            escolha = scanner.next();
             if (escolha.equalsIgnoreCase("Cara") || escolha.equalsIgnoreCase("Coroa")) {
                 jogoValido = false; // Sai do loop se a escolha for válida
             } else {
@@ -42,7 +47,7 @@ public class CaraOuCoroa implements Jogo {
         // Aqui você pode adicionar lógica para contar tentativas, etc.
         // Exemplo de contagem de tentativas
         int tentativas = 1; // Exemplo de contagem de tentativas
-        Resultado resultadoObj = new Resultado("Cara ou Coroa", resultadoEnum, tentativas, resultado);
+        Resultado resultadoObj = new Resultado("Cara ou Coroa", resultadoEnum, tentativas, resultadoJogo);
         return resultadoObj;
 
         /*

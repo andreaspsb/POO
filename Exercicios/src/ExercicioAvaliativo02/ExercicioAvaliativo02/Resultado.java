@@ -1,17 +1,17 @@
+package ExercicioAvaliativo02;
+
 public class Resultado {
 
     private String nomeJogo;
     private EResultado resultado;
     private int tentativas;
-    private int sorteado;
-    private int idade;
+    private String sorteado;
 
-    public Resultado(String nomeJogo, EResultado resultado, int tentativas, int sorteado, int idade) {
+    public Resultado(String nomeJogo, EResultado resultado, int tentativas, String sorteado) {
         this.nomeJogo = nomeJogo;
         this.resultado = resultado;
         this.tentativas = tentativas;
         this.sorteado = sorteado;
-        this.idade = idade;
 
     }
     
@@ -42,10 +42,10 @@ public class Resultado {
     public void setTentativas(int tentativas) {
         this.tentativas = tentativas;
     }
-    public int getSorteado() {
+    public String getSorteado() {
         return sorteado;
     }
-    public void setSorteado(int sorteado) {
+    public void setSorteado(String sorteado) {
         this.sorteado = sorteado;
     }
     @Override
@@ -64,16 +64,5 @@ public class Resultado {
         Resultado resultado1 = (Resultado) o;
         return tentativas == resultado1.tentativas && sorteado == resultado1.sorteado && nomeJogo.equals(resultado1.nomeJogo) && resultado == resultado1.resultado;
     }
-    @Override
-    public int hashCode() {
-        return Objects.hash(nomeJogo, resultado, tentativas, sorteado);
-    }
-    @Override
-
-    public int multiplicarPelaIdade(int idade) {
-        return this.tentativas * idade;
-    }
-    public int somarComSorteado(int numero) {
-        return this.sorteado + numero;
-    }
+    
 }

@@ -1,3 +1,5 @@
+package ExercicioAvaliativo02;
+
 public enum EResultado {
 
     VITORIA("Vitoria"),
