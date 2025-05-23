@@ -1,14 +1,18 @@
+package pacotedoportella;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class App {
     static List<HistoriaQuadrinhos> historias;
 
-    // sistema para cadastrasr histórias em quadrinhos
+    // sistema para cadastrar histórias em quadrinhos
     public static void main(String[] args) {
-        historias = new java.util.ArrayList<>();
+        historias = new ArrayList<>();
 
         // Criação do objeto Scanner para ler a entrada do usuário
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
 
         // Exibe o menu de opções
         System.out.println("Escolha uma opção:");
@@ -25,11 +29,11 @@ public class App {
         switch (opcao) {
             case 1:
                 // Chama o método para cadastrar história em quadrinhos
-                cadastrarHistoriaQuadrinhos();
+                cadastrarHistoriaQuadrinhos(scanner);
                 break;
             case 2:
                 // Chama o método para pesquisar história em quadrinhos
-                pesquisarHistoriaQuadrinhos();
+                pesquisarHistoriaQuadrinhos(scanner);
                 break;
             case 3:
                 // Chama o método para exibir todas as histórias cadastradas
@@ -49,13 +53,12 @@ public class App {
     }
 
     // Método para cadastrar história em quadrinhos
-    public static void cadastrarHistoriaQuadrinhos() {
+    public static void cadastrarHistoriaQuadrinhos(Scanner scanner) {
         // Lógica para cadastrar história em quadrinhos
         System.out.println("Cadastrar História em Quadrinhos");
         // Aqui você pode adicionar a lógica para cadastrar a história em quadrinhos
         // Exemplo: solicitar informações ao usuário, armazenar em uma lista, etc.
-        // Exemplo de informações a serem solicitadas
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
+        // Exemplo de informações a serem solicitadas        
         System.out.print("Digite o título da história: ");
         String titulo = scanner.nextLine();
         System.out.print("Digite o autor da história: ");
@@ -74,12 +77,11 @@ public class App {
         // Exemplo de impressão das informações cadastradas
     }
 
-    public static void pesquisarHistoriaQuadrinhos() {
+    public static void pesquisarHistoriaQuadrinhos(Scanner scanner) {
         // Lógica para pesquisar história em quadrinhos
         System.out.println("Pesquisar História em Quadrinhos");
         // Aqui você pode adicionar a lógica para pesquisar a história em quadrinhos
         // Exemplo: solicitar informações ao usuário, buscar na lista, etc.
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
         System.out.print("Digite o título da história que deseja pesquisar: ");
         String titulo = scanner.nextLine();
         // Aqui você pode adicionar a lógica para buscar as informações na lista ou
