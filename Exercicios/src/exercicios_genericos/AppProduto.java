@@ -3,7 +3,7 @@ package exercicios_genericos;
 import java.util.HashMap;
 import java.util.Map;
 
-public class App {
+public class AppProduto {
     public static void main(String[] args) {
         try {
             Produto produto1 = new Produto("Produto A", "001", 10);
