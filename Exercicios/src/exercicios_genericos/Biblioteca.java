@@ -41,6 +41,15 @@ public class Biblioteca<T> {
         return quantidadeLivros;
     }
 
+    public void emprestarLivro(T livro) throws ItemIndisponivelException {
+        if (livro == null || !itens.contains(livro)) {
+            throw new ItemIndisponivelException("Livro indisponível: " + livro);
+        }
+        itens.remove(livro);
+        quantidadeLivros--;
+        System.out.println("Livro emprestado: " + livro);
+    }
+
     public static class Livro {
         private String titulo;
         
@@ -65,7 +74,7 @@ public class Biblioteca<T> {
         public String toString() {
             return titulo;
         }
-    }
+    }    
 
     // Método para testar a biblioteca
     public static void main(String[] args) {
