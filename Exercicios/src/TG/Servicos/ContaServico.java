@@ -17,25 +17,10 @@ public class ContaServico {
     public ContaServico() {
         this.contaRepositorio = new ContaRepositorio();
     }
-
-    /**
-     * Adiciona uma nova conta ao repositório.
-     *
-     * @param conta A conta a ser adicionada.
-     */
-    public void adicionarConta(Conta conta) {
-        if (conta == null) {
-            throw new IllegalArgumentException("Conta não pode ser nula.");
-        }
-        if (conta.getNumero() == null || conta.getSaldo() == null) {
-            throw new IllegalArgumentException("Número da conta e saldo não podem ser nulos.");
-        }
-        if (conta.getSaldo().compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Saldo da conta não pode ser negativo.");
-        }
-        if (conta.getNumero().isEmpty()) {
-            throw new IllegalArgumentException("Número da conta não pode ser vazio.");
-        }
+    
+    public void adicionarConta() {
+        String numero = obterProximoNumeroConta();
+        Conta conta = new Conta(numero, BigDecimal.ZERO);        
 
         contaRepositorio.adicionarConta(conta);
     }
@@ -64,7 +49,8 @@ public class ContaServico {
             throw new IllegalArgumentException("Conta não encontrada.");
         }
 
-        conta.depositar(valor);
+        conta.creditar(valor);
+        contaRepositorio.atualizarConta(conta);
     }
 
     public BigDecimal consultarSaldo(String numeroConta) {
@@ -101,7 +87,43 @@ public class ContaServico {
             throw new IllegalArgumentException("Conta de destino não encontrada.");
         }
 
-        contaOrigem.sacar(valor);
-        contaDestino.depositar(valor);
+        contaOrigem.debitar(valor);
+        contaDestino.creditar(valor);
+        contaRepositorio.atualizarConta(contaOrigem);
+        contaRepositorio.atualizarConta(contaDestino);
+    }
+
+    public void debitar(String numeroConta, BigDecimal valor) {
+        if (numeroConta == null || numeroConta.isEmpty()) {
+            throw new IllegalArgumentException("Número da conta não pode ser nulo ou vazio.");
+        }
+        if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Valor do saque deve ser maior que zero.");
+        }
+
+        Conta conta = buscarContaPorNumero(numeroConta);
+        if (conta == null) {
+            throw new IllegalArgumentException("Conta não encontrada.");
+        }
+
+        conta.debitar(valor);
+        contaRepositorio.atualizarConta(conta);
+    }
+
+    private String obterProximoNumeroConta() {
+        List<Conta> contas = listarContas();
+        if (contas.isEmpty()) {
+            return "0001"; // Retorna o primeiro código se não houver vendas
+        }
+        // Obtém o último código de venda e incrementa para o próximo
+        // Assumindo que os códigos de venda são numéricos e formatados como "0001", "0002", etc.
+        contas.sort((v1, v2) -> v1.getNumero().compareTo(v2.getNumero()));
+        if (contas.size() < 1) {
+            return "0001"; // Retorna o primeiro código se não houver vendas
+        }        
+
+        String ultimoCodigo = contas.get(contas.size() - 1).getNumero();
+        int proximoNumero = Integer.parseInt(ultimoCodigo) + 1;
+        return String.format("%04d", proximoNumero); // Formata para 4 dígitos
     }
 }

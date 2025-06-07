@@ -67,4 +67,5 @@ public class ProdutoServico {
     public List<Produto> listarProdutos() {
         return produtoRepositorio.listarProdutos();
     }
+    
 }

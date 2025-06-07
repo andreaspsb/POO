@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class Conta {
     private String numero;
-    private BigDecimal saldo;
+    private BigDecimal saldo;        
 
     public Conta(String numero, BigDecimal saldo) {
         if (numero == null || saldo == null) {
@@ -22,14 +22,14 @@ public class Conta {
         return saldo;
     }
 
-    public void depositar(BigDecimal valor) {
+    public void creditar(BigDecimal valor) {
         if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Valor do depósito deve ser maior que zero.");
         }
         saldo = saldo.add(valor);
     }
 
-    public void sacar(BigDecimal valor) {
+    public void debitar(BigDecimal valor) {
         if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Valor do saque deve ser maior que zero.");
         }

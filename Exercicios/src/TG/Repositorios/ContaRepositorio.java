@@ -77,6 +77,38 @@ public class ContaRepositorio{
         }
         return new Conta(numero, saldo);
     }
+
+    public void atualizarConta(Conta conta) {
+        if (conta == null) {
+            throw new IllegalArgumentException("Conta não pode ser nula");
+        }
+
+        List<Conta> contas = listarContas();
+        boolean encontrado = false;
+
+        for (int i = 0; i < contas.size(); i++) {
+            if (contas.get(i).getNumero().equals(conta.getNumero())) {
+                contas.set(i, conta);
+                encontrado = true;
+                break;
+            }
+        }
+
+        if (!encontrado) {
+            throw new IllegalArgumentException("Conta com número " + conta.getNumero() + " não encontrada.");
+        }
+
+        // Reescrever o arquivo com as contas atualizadas
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo))) {
+            for (Conta c : contas) {
+                writer.append(c.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+    }
     
 
 }

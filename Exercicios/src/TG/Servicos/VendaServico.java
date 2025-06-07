@@ -18,8 +18,7 @@ public class VendaServico {
 
     public VendaServico() {
         this.vendaRepositorio = new VendaRepositorio();
-    }
-    
+    }    
 
     /**
      * Adiciona uma nova venda ao repositório.
@@ -54,12 +53,12 @@ public class VendaServico {
         if (venda.getCliente().getConta().getSaldo().compareTo(BigDecimal.valueOf(total)) < 0) {
             throw new IllegalStateException("Saldo insuficiente na conta do cliente para finalizar a venda.");              
         }
-        
 
-         // VendaRepositorio vendaRepositorio = new VendaRepositorio();
-        // vendaRepositorio.adicionarVenda(this);
-        // Exemplo de mensagem de sucesso
-        System.out.println("Venda finalizada com sucesso! Código: " + codigo + ", Total: " + calcularTotal());
+        ContaServico contaServico = new ContaServico();
+        contaServico.debitar(venda.getCliente().getConta().getNumero(), BigDecimal.valueOf(total));
+
+        vendaRepositorio.atualizarVenda(venda);
+        
     }
 
     public Venda buscarVendaPorCodigo(String codigo) {
