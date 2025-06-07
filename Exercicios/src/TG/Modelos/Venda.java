@@ -5,7 +5,9 @@ import java.util.Map;
 
 public class Venda {
     private String codigo;
-    private LocalDateTime data;
+    private LocalDateTime dateTimeAbertura;
+    private LocalDateTime dateTimeConclusao;
+    private EnumStatusVenda status;
     private Cliente cliente;
     private Map<Produto, Integer> produtos; // Mapeia produtos e suas quantidades
 
@@ -14,8 +16,10 @@ public class Venda {
             throw new IllegalArgumentException("Código da venda não pode ser nulo ou vazio.");
         }
         this.codigo = codigo;
+
+        this.dateTimeAbertura = LocalDateTime.now();
+        this.status = new EnumStatusVenda(EnumStatusVenda.ABERTA);
         
-        this.data = LocalDateTime.now();
         if (cliente == null) {
             throw new IllegalArgumentException("Cliente não pode ser nulo.");
         }
@@ -23,9 +27,12 @@ public class Venda {
         this.produtos = new java.util.HashMap<>();
     }
 
-    public Venda(String codigo2, LocalDateTime dataHora, Cliente cliente) {
+    public Venda(String codigo2, LocalDateTime dateTimeAbertura, LocalDateTime dateTimeConclusao,
+            EnumStatusVenda status, Cliente cliente) {
         this.codigo = codigo2;
-        this.data = dataHora;
+        this.dateTimeAbertura = dateTimeAbertura;
+        this.dateTimeConclusao = dateTimeConclusao;
+        this.status = status;
         this.cliente = cliente;
     }
 
@@ -37,9 +44,32 @@ public class Venda {
         this.codigo = codigo;
     }
 
-    public LocalDateTime getData() {
-        return data;
-    }    
+    public LocalDateTime getDateTimeAbertura() {
+        return dateTimeAbertura;
+    }
+
+    public void setDateTimeAbertura(LocalDateTime dateTimeAbertura) {
+        this.dateTimeAbertura = dateTimeAbertura;
+    }
+
+    public LocalDateTime getDateTimeConclusao() {
+        return dateTimeConclusao;
+    }
+
+    public void setDateTimeConclusao(LocalDateTime dateTimeConclusao) {
+        this.dateTimeConclusao = dateTimeConclusao;
+    }
+
+    public EnumStatusVenda getStatus() {
+        return status;
+    }
+
+    public void setStatus(EnumStatusVenda status) {
+        if (status == null || !EnumStatusVenda.isValid(status.toString())) {
+            throw new IllegalArgumentException("Status inválido.");
+        }
+        this.status = status;
+    }
 
     public Cliente getCliente() {
         return cliente;
@@ -76,18 +106,19 @@ public class Venda {
             total += produto.getPreco() * quantidade;
         }
         return total;
-    }    
+    }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Venda{")
-          .append("codigo='").append(codigo).append('\'')
-          .append(", data=").append(data)
-          .append(", cliente=").append(cliente)
-          .append('}');
+                .append("codigo='").append(codigo).append('\'')
+                .append(", data=").append(dateTimeAbertura)
+                .append(", dataConclusao=").append(dateTimeConclusao)
+                .append(", status=").append(status)
+                .append(", cliente=").append(cliente.getCpf())
+                .append('}');
         return sb.toString();
     }
-    
 
 }

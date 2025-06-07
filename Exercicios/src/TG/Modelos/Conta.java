@@ -24,17 +24,17 @@ public class Conta {
 
     public void creditar(BigDecimal valor) {
         if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Valor do depósito deve ser maior que zero.");
+            throw new IllegalArgumentException("Valor do crédito deve ser maior que zero.");
         }
         saldo = saldo.add(valor);
     }
 
     public void debitar(BigDecimal valor) {
         if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Valor do saque deve ser maior que zero.");
+            throw new IllegalArgumentException("Valor do débito deve ser maior que zero.");
         }
         if (valor.compareTo(saldo) > 0) {
-            throw new IllegalArgumentException("Saldo insuficiente para saque.");
+            throw new IllegalArgumentException("Saldo insuficiente para débito.");
         }
         saldo = saldo.subtract(valor);
     }

@@ -1,10 +1,11 @@
 package TG.Servicos;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import TG.Modelos.Cliente;
+import TG.Modelos.EnumStatusVenda;
 import TG.Modelos.Venda;
 import TG.Repositorios.VendaRepositorio;
 
@@ -56,6 +57,9 @@ public class VendaServico {
 
         ContaServico contaServico = new ContaServico();
         contaServico.debitar(venda.getCliente().getConta().getNumero(), BigDecimal.valueOf(total));
+
+        venda.setDateTimeConclusao(LocalDateTime.now());
+        venda.setStatus(new EnumStatusVenda(EnumStatusVenda.CONCLUIDA));
 
         vendaRepositorio.atualizarVenda(venda);
         

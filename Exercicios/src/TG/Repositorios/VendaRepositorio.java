@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import TG.Modelos.Cliente;
+import TG.Modelos.EnumStatusVenda;
 import TG.Modelos.Venda;
 
 /**
@@ -70,16 +71,41 @@ public class VendaRepositorio {
 
     private Venda parseVenda(String linha) {
         String[] partes = linha.split(",");
-        if (partes.length < 3) {
-            return null;
+        if (partes.length < 5) {
+            return null; 
         }
         String codigo = partes[0].trim();
-        LocalDateTime dataHora = LocalDateTime.parse(partes[1].trim());
-        String clienteId = partes[2].trim();
+        LocalDateTime dataHoraAbertura = LocalDateTime.parse(partes[1].trim());
+        LocalDateTime dataHoraConclusao = LocalDateTime.parse(partes[2].trim());
+        EnumStatusVenda status = new EnumStatusVenda(partes[3].trim().toUpperCase());
+        String clienteId = partes[4].trim();
         ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
         Cliente cliente = clienteRepositorio.buscarClientePorCPF(clienteId);
-        Venda venda = new Venda(codigo, dataHora, cliente);
+        Venda venda = new Venda(codigo, dataHoraAbertura, dataHoraConclusao, status, cliente);
         return venda;
+    }
+
+    public void atualizarVenda(Venda venda) {
+        if (venda == null) {
+            throw new IllegalArgumentException("Venda não pode ser nula.");
+        }
+
+        List<Venda> vendas = listarVendas();
+        for (int i = 0; i < vendas.size(); i++) {
+            if (vendas.get(i).getCodigo().equals(venda.getCodigo())) {
+                vendas.set(i, venda);
+                break;
+            }
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo))) {
+            for (Venda v : vendas) {
+                writer.append(v.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }    
 
 }
