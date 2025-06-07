@@ -1,16 +1,23 @@
 package TG.Repositorios;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import TG.Modelos.Conta;
+
 /**
  * Classe responsável por gerenciar o repositório de clientes.
  * Permite adicionar e buscar clientes, além de persistir essas informações em um arquivo.
  */
 public class ContaRepositorio{
 
-    private String caminhoArquivo;
-
-    public ContaRepositorio(String caminhoArquivo) {
-        this.caminhoArquivo = caminhoArquivo;
-    }
+    private String caminhoArquivo;    
 
     public void adicionarConta(Conta conta) {
         if (conta == null) {
@@ -70,5 +77,6 @@ public class ContaRepositorio{
         }
         return new Conta(numero, saldo);
     }
+    
 
 }
