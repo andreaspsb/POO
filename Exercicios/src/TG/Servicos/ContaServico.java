@@ -14,8 +14,8 @@ public class ContaServico {
 
     private ContaRepositorio contaRepositorio;
 
-    public ContaServico(ContaRepositorio contaRepositorio) {
-        this.contaRepositorio = contaRepositorio;
+    public ContaServico() {
+        this.contaRepositorio = new ContaRepositorio();
     }
 
     /**

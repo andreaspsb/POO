@@ -13,8 +13,8 @@ public class ProdutoServico {
 
     private ProdutoRepositorio produtoRepositorio;
 
-    public ProdutoServico(ProdutoRepositorio produtoRepositorio) {
-        this.produtoRepositorio = produtoRepositorio;
+    public ProdutoServico() {
+        this.produtoRepositorio = new ProdutoRepositorio();
     }
 
     /**

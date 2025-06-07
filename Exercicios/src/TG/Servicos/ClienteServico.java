@@ -5,7 +5,6 @@ import java.util.List;
 
 import TG.Modelos.Cliente;
 import TG.Repositorios.ClienteRepositorio;
-import TG.Servicos.ContaServico;
 
 /**
  * Classe responsável por gerenciar os serviços relacionados a clientes.
@@ -15,8 +14,8 @@ public class ClienteServico {
 
     private ClienteRepositorio clienteRepositorio;
 
-    public ClienteServico(ClienteRepositorio clienteRepositorio) {
-        this.clienteRepositorio = clienteRepositorio;
+    public ClienteServico() {
+        this.clienteRepositorio = new ClienteRepositorio();
     }
 
     /**
