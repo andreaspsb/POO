@@ -17,7 +17,7 @@ import TG.Modelos.Conta;
  */
 public class ClienteRepositorio {
     
-    private String caminhoArquivo;
+    private String caminhoArquivo = "/Exercicios/src/TG/Arquivos/clientes.txt";
     
     public void adicionarCliente(Cliente cliente) {
         if (cliente == null) {

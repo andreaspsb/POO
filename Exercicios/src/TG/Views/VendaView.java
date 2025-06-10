@@ -43,47 +43,21 @@ public class VendaView extends JFrame {
 
         btnAdicionarProduto = new JButton("Adicionar Produto");
         btnAdicionarProduto.setBounds(50, 120, 150, 30);
+        btnAdicionarProduto.addActionListener(e -> adicionarProduto());
         panel.add(btnAdicionarProduto);
 
         btnFinalizarVenda = new JButton("Finalizar Venda");
-        btnFinalizarVenda.setBounds(220, 120, 150, 30);
+        btnFinalizarVenda.setBounds(220, 120, 150, 30);        
+        btnFinalizarVenda.addActionListener(e -> finalizarVenda());
         panel.add(btnFinalizarVenda);
 
         btnCancelarVenda = new JButton("Cancelar Venda");
         btnCancelarVenda.setBounds(135, 180, 150, 30);
+        btnCancelarVenda.addActionListener(e -> cancelar());
         panel.add(btnCancelarVenda);
 
         add(panel);
-    }
-
-    public static void main(String[] args) {
-        VendaView vendaView = new VendaView();
-        vendaView.mostrar();
-
-        vendaView.adicionarListenerAdicionarProduto(e -> {
-            vendaView.adicionarProduto();
-        });
-
-        vendaView.adicionarListenerFinalizarVenda(e -> {
-            vendaView.finalizarVenda();
-        });
-
-        vendaView.adicionarListenerCancelarVenda(e -> {
-            vendaView.cancelar();
-        });
-    }
-
-    public void adicionarListenerAdicionarProduto(java.awt.event.ActionListener listener) {
-        btnAdicionarProduto.addActionListener(listener);
-    }
-
-    public void adicionarListenerFinalizarVenda(java.awt.event.ActionListener listener) {
-        btnFinalizarVenda.addActionListener(listener);
-    }
-
-    public void adicionarListenerCancelarVenda(java.awt.event.ActionListener listener) {
-        btnCancelarVenda.addActionListener(listener);
-    }
+    }    
 
     private void adicionarProduto() {
         // Aqui você pode implementar a lógica para adicionar produtos à venda.
@@ -171,6 +145,36 @@ public class VendaView extends JFrame {
 
     public void exibirSucesso(String mensagem) {
         JOptionPane.showMessageDialog(this, mensagem, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-    } 
+    }
+    
+    
+    public static void main(String[] args) {
+        VendaView vendaView = new VendaView();
+        vendaView.mostrar();
+
+        vendaView.adicionarListenerAdicionarProduto(e -> {
+            vendaView.adicionarProduto();
+        });
+
+        vendaView.adicionarListenerFinalizarVenda(e -> {
+            vendaView.finalizarVenda();
+        });
+
+        vendaView.adicionarListenerCancelarVenda(e -> {
+            vendaView.cancelar();
+        });
+    }
+
+    public void adicionarListenerAdicionarProduto(java.awt.event.ActionListener listener) {
+        btnAdicionarProduto.addActionListener(listener);
+    }
+
+    public void adicionarListenerFinalizarVenda(java.awt.event.ActionListener listener) {
+        btnFinalizarVenda.addActionListener(listener);
+    }
+
+    public void adicionarListenerCancelarVenda(java.awt.event.ActionListener listener) {
+        btnCancelarVenda.addActionListener(listener);
+    }
 
 }

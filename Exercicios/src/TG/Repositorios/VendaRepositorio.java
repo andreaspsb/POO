@@ -19,7 +19,7 @@ import TG.Modelos.Venda;
  */
 public class VendaRepositorio {
     
-    private String caminhoArquivo;
+    private String caminhoArquivo = "/Exercicios/src/TG/Arquivos/vendas.txt";
 
     public void adicionarVenda(Venda venda) {
         if (venda == null) {

@@ -17,7 +17,7 @@ import TG.Modelos.Venda;
  * informações em um arquivo.
  */
 public class VendaItemRepositorio {
-    private String caminhoArquivo;
+    private String caminhoArquivo = "/Exercicios/src/TG/Arquivos/vendaItem.txt";
 
     // Método para adicionar um item de venda
     public void adicionarItensVenda(Venda venda) {

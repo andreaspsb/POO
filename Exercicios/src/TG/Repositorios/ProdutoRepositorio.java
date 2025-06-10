@@ -16,7 +16,7 @@ import TG.Modelos.Produto;
  */
 public class ProdutoRepositorio {
 
-    private String caminhoArquivo;
+    private String caminhoArquivo = "/Exercicios/src/TG/Arquivos/produtos.txt";
 
     public void adicionarProduto(Produto produto) {
         if (produto == null) {
@@ -27,6 +27,7 @@ public class ProdutoRepositorio {
             writer.newLine();
         } catch (IOException e) {
             e.printStackTrace();
+            throw new RuntimeException("Erro ao adicionar produto ao repositório", e);
         }
     }
 

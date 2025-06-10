@@ -60,27 +60,7 @@ public class ClienteView extends JFrame {
         panel.add(btnCancelar);
 
         add(panel);
-    }
-
-    public static void main(String[] args) {
-        ClienteView clienteView = new ClienteView();
-        clienteView.mostrar();
-
-        clienteView.adicionarListenerSalvar(e -> {
-            clienteView.salvarCliente();
-        });
-        clienteView.adicionarListenerCancelar(e -> {
-            clienteView.cancelar();
-        });
-        
-    }
-
-    public void adicionarListenerSalvar(java.awt.event.ActionListener listener) {
-        btnSalvar.addActionListener(listener);
-    }
-    public void adicionarListenerCancelar(java.awt.event.ActionListener listener) {
-        btnCancelar.addActionListener(listener);
-    }
+    }    
 
     private void salvarCliente() {
         String nome = txtNome.getText();
@@ -154,5 +134,24 @@ public class ClienteView extends JFrame {
         JOptionPane.showMessageDialog(this, mensagem, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public static void main(String[] args) {
+        ClienteView clienteView = new ClienteView();
+        clienteView.mostrar();
+
+        clienteView.adicionarListenerSalvar(e -> {
+            clienteView.salvarCliente();
+        });
+        clienteView.adicionarListenerCancelar(e -> {
+            clienteView.cancelar();
+        });
+        
+    }
+
+    public void adicionarListenerSalvar(java.awt.event.ActionListener listener) {
+        btnSalvar.addActionListener(listener);
+    }
+    public void adicionarListenerCancelar(java.awt.event.ActionListener listener) {
+        btnCancelar.addActionListener(listener);
+    }
 
 }

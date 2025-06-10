@@ -51,34 +51,16 @@ public class ProdutoView extends JFrame {
 
         btnSalvar = new JButton("Salvar");
         btnSalvar.setBounds(50, 180, 100, 30);
+        btnSalvar.addActionListener(e -> salvarProduto());
         panel.add(btnSalvar);
 
         btnCancelar = new JButton("Cancelar");
         btnCancelar.setBounds(200, 180, 100, 30);
+        btnSalvar.addActionListener(e -> cancelar());
         panel.add(btnCancelar);
 
         add(panel);
-    }
-
-    public static void main(String[] args) {
-        ProdutoView produtoView = new ProdutoView();
-        produtoView.mostrar();        
-        
-        produtoView.adicionarListenerSalvar(e -> {
-            produtoView.salvarProduto();
-        });
-        
-        produtoView.adicionarListenerCancelar(e -> {
-            produtoView.cancelarCadastro();
-        });
-    }
-
-    public void adicionarListenerSalvar(java.awt.event.ActionListener listener) {
-        btnSalvar.addActionListener(listener);
-    }
-    public void adicionarListenerCancelar(java.awt.event.ActionListener listener) {
-        btnCancelar.addActionListener(listener);
-    }
+    }        
 
     private void salvarProduto() {
         Produto produto = obterProduto();
@@ -110,7 +92,7 @@ public class ProdutoView extends JFrame {
         return new Produto(codigo, descricao, preco);
     }
 
-    private void cancelarCadastro() {
+    private void cancelar() {
         limparCampos();
         exibirMensagem("Cadastro cancelado.");
         fechar();
@@ -149,7 +131,26 @@ public class ProdutoView extends JFrame {
     public void exibirSucesso(String mensagem) {
         JOptionPane.showMessageDialog(this, mensagem, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
     }
+
     
+    
+    public static void main(String[] args) {
+        ProdutoView produtoView = new ProdutoView();
+        produtoView.mostrar();        
+        
+        produtoView.adicionarListenerSalvar(e -> {
+            produtoView.salvarProduto();
+        });
+        
+        produtoView.adicionarListenerCancelar(e -> {
+            produtoView.cancelar();
+        });
+    }
 
-
+    public void adicionarListenerSalvar(java.awt.event.ActionListener listener) {
+        btnSalvar.addActionListener(listener);
+    }
+    public void adicionarListenerCancelar(java.awt.event.ActionListener listener) {
+        btnCancelar.addActionListener(listener);
+    }
 }
