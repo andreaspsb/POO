@@ -60,41 +60,9 @@ public class ProdutoView extends JFrame {
         add(panel);
     }
 
-    public void mostrar() {
-        setVisible(true);
-    }
-    public void adicionarListenerSalvar(java.awt.event.ActionListener listener) {
-        btnSalvar.addActionListener(listener);
-    }
-    public void adicionarListenerCancelar(java.awt.event.ActionListener listener) {
-        btnCancelar.addActionListener(listener);
-    }
-    public Produto obterProduto() {
-        String codigo = txtCodigo.getText();
-        String descricao = txtDescricao.getText();
-        double preco;
-        try {
-            preco = Double.parseDouble(txtPreco.getText());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Preço inválido. Por favor, insira um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
-            return null;
-        }
-
-        return new Produto(codigo, descricao, preco);
-    }
-    public void limparCampos() {
-        txtCodigo.setText("");
-        txtDescricao.setText("");
-        txtPreco.setText("");
-    }
-    public void exibirMensagem(String mensagem) {
-        JOptionPane.showMessageDialog(this, mensagem);
-    }
     public static void main(String[] args) {
         ProdutoView produtoView = new ProdutoView();
-        produtoView.mostrar();
-        
-        ProdutoServico produtoServico = new ProdutoServico();
+        produtoView.mostrar();        
         
         produtoView.adicionarListenerSalvar(e -> {
             produtoView.salvarProduto();
@@ -104,19 +72,14 @@ public class ProdutoView extends JFrame {
             produtoView.cancelarCadastro();
         });
     }
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
+
+    public void adicionarListenerSalvar(java.awt.event.ActionListener listener) {
+        btnSalvar.addActionListener(listener);
     }
-    public void fechar() {
-        setVisible(false);
-        dispose();
+    public void adicionarListenerCancelar(java.awt.event.ActionListener listener) {
+        btnCancelar.addActionListener(listener);
     }
-    public void exibirErro(String mensagem) {
-        JOptionPane.showMessageDialog(this, mensagem, "Erro", JOptionPane.ERROR_MESSAGE);
-    }
-    public void exibirSucesso(String mensagem) {
-        JOptionPane.showMessageDialog(this, mensagem, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-    }
+
     private void salvarProduto() {
         Produto produto = obterProduto();
         if (produto != null) {
@@ -132,11 +95,61 @@ public class ProdutoView extends JFrame {
             exibirErro("Preencha todos os campos corretamente.");
         }
     }
+
+    public Produto obterProduto() {
+        String codigo = txtCodigo.getText();
+        String descricao = txtDescricao.getText();
+        double preco;
+        try {
+            preco = Double.parseDouble(txtPreco.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Preço inválido. Por favor, insira um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+
+        return new Produto(codigo, descricao, preco);
+    }
+
     private void cancelarCadastro() {
         limparCampos();
         exibirMensagem("Cadastro cancelado.");
         fechar();
     }
+
+    
+    
+    
+    public void limparCampos() {
+        txtCodigo.setText("");
+        txtDescricao.setText("");
+        txtPreco.setText("");
+    }
+
+    public void mostrar() {
+        setVisible(true);
+    }
+    
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+    }
+
+    public void fechar() {
+        setVisible(false);
+        dispose();
+    }
+
+    public void exibirMensagem(String mensagem) {
+        JOptionPane.showMessageDialog(this, mensagem);
+    }
+
+    public void exibirErro(String mensagem) {
+        JOptionPane.showMessageDialog(this, mensagem, "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void exibirSucesso(String mensagem) {
+        JOptionPane.showMessageDialog(this, mensagem, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+    }
+    
 
 
 }

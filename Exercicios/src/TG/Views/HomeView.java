@@ -41,18 +41,21 @@ public class HomeView extends JFrame {
         add(panel);
     }
 
-    public void mostrar() {
-        setVisible(true);
-    }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             HomeView homeView = new HomeView();
             homeView.mostrar();            
         });
     }
+
+    public void mostrar() {
+        setVisible(true);
+    }
+    
     public void setVisible(boolean visible) {
         super.setVisible(visible);
     }
+    
     public void fechar() {
         setVisible(false);
         dispose();

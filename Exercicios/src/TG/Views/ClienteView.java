@@ -62,6 +62,26 @@ public class ClienteView extends JFrame {
         add(panel);
     }
 
+    public static void main(String[] args) {
+        ClienteView clienteView = new ClienteView();
+        clienteView.mostrar();
+
+        clienteView.adicionarListenerSalvar(e -> {
+            clienteView.salvarCliente();
+        });
+        clienteView.adicionarListenerCancelar(e -> {
+            clienteView.cancelar();
+        });
+        
+    }
+
+    public void adicionarListenerSalvar(java.awt.event.ActionListener listener) {
+        btnSalvar.addActionListener(listener);
+    }
+    public void adicionarListenerCancelar(java.awt.event.ActionListener listener) {
+        btnCancelar.addActionListener(listener);
+    }
+
     private void salvarCliente() {
         String nome = txtNome.getText();
         String email = txtEmail.getText();
@@ -78,48 +98,13 @@ public class ClienteView extends JFrame {
         
         try {
             clienteServico.adicionarCliente(cliente);
-            JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            exibirSucesso("Cliente cadastrado com sucesso!");
             limparCampos();
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao cadastrar cliente: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            exibirErro("Erro ao cadastrar cliente: " + ex.getMessage());
         }
     }
 
-    private void cancelar() {
-        limparCampos();
-        dispose();
-    }
-
-    private void limparCampos() {
-        txtNome.setText("");
-        txtEmail.setText("");
-        txtTelefone.setText("");
-    }
-
-    public void mostrar() {
-        setVisible(true);
-    }
-    public static void main(String[] args) {
-        ClienteView clienteView = new ClienteView();
-        clienteView.mostrar();
-
-        clienteView.adicionarListenerSalvar(e -> {
-            clienteView.salvarCliente();
-        });
-        clienteView.adicionarListenerCancelar(e -> {
-            clienteView.cancelar();
-        });
-        
-    }
-    public void adicionarListenerSalvar(java.awt.event.ActionListener listener) {
-        btnSalvar.addActionListener(listener);
-    }
-    public void adicionarListenerCancelar(java.awt.event.ActionListener listener) {
-        btnCancelar.addActionListener(listener);
-    }
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-    }
     public Cliente obterCliente() {
         String nome = txtNome.getText();
         String email = txtEmail.getText();
@@ -131,8 +116,43 @@ public class ClienteView extends JFrame {
 
         return new Cliente(nome, email, telefone);
     }
+
+    private void cancelar() {
+        limparCampos();
+        exibirMensagem("Cadastro cancelado.");
+        fechar();
+    }
+
+    private void limparCampos() {
+        txtNome.setText("");
+        txtEmail.setText("");
+        txtTelefone.setText("");
+    }
+
+    public void mostrar() {
+        setVisible(true);
+    }    
+    
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+    }
+
+    public void fechar() {
+        setVisible(false);
+        dispose();
+    }
+    
     public void exibirMensagem(String mensagem) {
         JOptionPane.showMessageDialog(this, mensagem);
-    }    
+    }
+    
+    public void exibirErro(String mensagem) {
+        JOptionPane.showMessageDialog(this, mensagem, "Erro", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void exibirSucesso(String mensagem) {
+        JOptionPane.showMessageDialog(this, mensagem, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+    }
+
 
 }
