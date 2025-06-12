@@ -17,7 +17,7 @@ import TG.Modelos.Conta;
  */
 public class ClienteRepositorio {
     
-    private String caminhoArquivo = "/Exercicios/src/TG/Arquivos/clientes.txt";
+    private String caminhoArquivo = "Exercicios/src/TG/Arquivos/clientes.txt";
     
     public void adicionarCliente(Cliente cliente) {
         if (cliente == null) {
@@ -64,14 +64,16 @@ public class ClienteRepositorio {
     }
 
     private Cliente parseCliente(String linha) {
+        linha = linha.replace("Cliente{", "").replace("}", "").trim();
+        
         String[] partes = linha.split(", ");
         if (partes.length != 4) {
             System.err.println("Formato inválido: " + linha);
             return null;
         }
-        String cpf = partes[0].split("=")[1].trim();
-        String nome = partes[1].split("=")[1].trim();
-        String email = partes[2].split("=")[1].trim();
+        String cpf = partes[0].split("=")[1].trim().replace("'", "");
+        String nome = partes[1].split("=")[1].trim().replace("'", "");
+        String email = partes[2].split("=")[1].trim().replace("'", "");
         String contaAux = partes[3].split("=")[1].trim(); // Se necessário, pode ser processado
         
         ContaRepositorio contaRepositorio = new ContaRepositorio();

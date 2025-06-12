@@ -17,7 +17,7 @@ import TG.Modelos.Conta;
  */
 public class ContaRepositorio{
 
-    private String caminhoArquivo = "/Exercicios/src/TG/Arquivos/contas.txt";    
+    private String caminhoArquivo = "Exercicios/src/TG/Arquivos/contas.txt";    
 
     public void adicionarConta(Conta conta) {
         if (conta == null) {
@@ -64,14 +64,16 @@ public class ContaRepositorio{
     }
 
     private Conta parseConta(String linha) {
+        linha = linha.replace("Conta{", "").replace("}", "").trim();
+
         String[] partes = linha.split(",");
         if (partes.length < 2) {
             return null; // Retornar null se a linha não estiver no formato esperado
         }
-        String numero = partes[0].trim();
+        String numero = partes[0].split("=")[1].trim().replace("'", "");
         BigDecimal saldo;
         try {
-            saldo = new BigDecimal(partes[1].trim());
+            saldo = new BigDecimal(partes[1].split("=")[1].trim());
         } catch (NumberFormatException e) {
             return null; // Retornar null se o saldo não for um número válido
         }

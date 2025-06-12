@@ -16,6 +16,13 @@ public class Cliente {
         this.conta = conta;
     }
 
+    public Cliente(String cpf) {
+        if (cpf == null) {
+            throw new IllegalArgumentException("CPF não pode ser nulo.");
+        }
+        this.cpf = cpf;
+    }
+
     public String getCpf() {
         return cpf;
     }

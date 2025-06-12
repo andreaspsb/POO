@@ -1,14 +1,19 @@
 package TG.Views;
 
+import java.math.BigDecimal;
+
 import javax.swing.*;
 import TG.Modelos.Cliente;
+import TG.Modelos.Conta;
 import TG.Servicos.ClienteServico;
+import javax.swing.text.*;
 
 public class ClienteView extends JFrame {
 
+    private JFormattedTextField txtCpf;
     private JTextField txtNome;
     private JTextField txtEmail;
-    private JTextField txtTelefone;
+    private JFormattedTextField txtConta;
     private JButton btnSalvar;
     private JButton btnCancelar;
 
@@ -23,56 +28,112 @@ public class ClienteView extends JFrame {
 
     private void initComponents() {
         JPanel panel = new JPanel();
-        panel.setLayout(null);
+        panel.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+        gbc.insets = new java.awt.Insets(8, 8, 8, 8);
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gbc.anchor = java.awt.GridBagConstraints.WEST;
+
+        JLabel lblCpf = new JLabel("CPF:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        panel.add(lblCpf, gbc);
+
+        try {
+            javax.swing.text.MaskFormatter cpfMask = new javax.swing.text.MaskFormatter("###.###.###-##");
+            cpfMask.setPlaceholderCharacter('_');
+            txtCpf = new JFormattedTextField(cpfMask);
+        } catch (java.text.ParseException e) {
+            txtCpf = new JFormattedTextField();
+        }
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        panel.add(txtCpf, gbc);
+        gbc.weightx = 0;
 
         JLabel lblNome = new JLabel("Nome:");
-        lblNome.setBounds(30, 30, 80, 25);
-        panel.add(lblNome);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(lblNome, gbc);
 
         txtNome = new JTextField();
-        txtNome.setBounds(120, 30, 200, 25);
-        panel.add(txtNome);
+        ((AbstractDocument) txtNome.getDocument()).setDocumentFilter(new DocumentFilter() {
+            @Override
+            public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
+                if (string != null) {
+                    string = string.toUpperCase().replaceAll("[^A-Z ]", "");
+                    super.insertString(fb, offset, string, attr);
+                }
+            }
+            @Override
+            public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                if (text != null) {
+                    text = text.toUpperCase().replaceAll("[^A-Z ]", "");
+                    super.replace(fb, offset, length, text, attrs);
+                }
+            }
+        });
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        gbc.weightx = 1.0;
+        panel.add(txtNome, gbc);
+        gbc.weightx = 0;
 
         JLabel lblEmail = new JLabel("Email:");
-        lblEmail.setBounds(30, 70, 80, 25);
-        panel.add(lblEmail);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        panel.add(lblEmail, gbc);
 
         txtEmail = new JTextField();
-        txtEmail.setBounds(120, 70, 200, 25);
-        panel.add(txtEmail);
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.weightx = 1.0;
+        panel.add(txtEmail, gbc);
+        gbc.weightx = 0;
 
-        JLabel lblTelefone = new JLabel("Telefone:");
-        lblTelefone.setBounds(30, 110, 80, 25);
-        panel.add(lblTelefone);
+        JLabel lblConta = new JLabel("Conta:");
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        panel.add(lblConta, gbc);
 
-        txtTelefone = new JTextField();
-        txtTelefone.setBounds(120, 110, 200, 25);
-        panel.add(txtTelefone);
+        try {
+            javax.swing.text.MaskFormatter contaMask = new javax.swing.text.MaskFormatter("########");
+            contaMask.setPlaceholderCharacter('_');
+            txtConta = new JFormattedTextField(contaMask);
+        } catch (java.text.ParseException e) {
+            txtConta = new JFormattedTextField();
+        }
+        gbc.gridx = 1;
+        gbc.gridy = 3;
+        gbc.weightx = 1.0;
+        panel.add(txtConta, gbc);
+        gbc.weightx = 0;
 
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 20, 0));
         btnSalvar = new JButton("Salvar");
-        btnSalvar.setBounds(50, 180, 100, 30);
         btnSalvar.addActionListener(e -> salvarCliente());
-        panel.add(btnSalvar);
-
+        buttonPanel.add(btnSalvar);
         btnCancelar = new JButton("Cancelar");
-        btnCancelar.setBounds(200, 180, 100, 30);
         btnCancelar.addActionListener(e -> cancelar());
-        panel.add(btnCancelar);
+        buttonPanel.add(btnCancelar);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.gridwidth = 2;
+        gbc.anchor = java.awt.GridBagConstraints.CENTER;
+        panel.add(buttonPanel, gbc);
 
         add(panel);
     }    
 
     private void salvarCliente() {
-        String nome = txtNome.getText();
-        String email = txtEmail.getText();
-        String telefone = txtTelefone.getText();
-
-        if (nome.isEmpty() || email.isEmpty() || telefone.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Todos os campos devem ser preenchidos.", "Erro", JOptionPane.ERROR_MESSAGE);
+        Cliente cliente = obterCliente();
+        if (cliente == null) {
+            exibirErro("Verifique os campos preenchidos.");
             return;
         }
-
-        Cliente cliente = new Cliente(nome, email, telefone);
         
         ClienteServico clienteServico = new ClienteServico();
         
@@ -86,15 +147,37 @@ public class ClienteView extends JFrame {
     }
 
     public Cliente obterCliente() {
+        String cpf = txtCpf.getText().replaceAll("[.\\-]", "");
         String nome = txtNome.getText();
         String email = txtEmail.getText();
-        String telefone = txtTelefone.getText();
+        String numeroConta = txtConta.getText();
 
-        if (nome.isEmpty() || email.isEmpty() || telefone.isEmpty()) {
-            throw new IllegalArgumentException("Todos os campos devem ser preenchidos.");
+        if (cpf.isEmpty() || nome.isEmpty() || email.isEmpty() || numeroConta.isEmpty()) {
+            exibirErro("Todos os campos devem ser preenchidos.");
+            return null;
         }
-
-        return new Cliente(nome, email, telefone);
+        if (!cpf.matches("\\d{11}")) {
+            exibirErro("CPF deve conter 11 dígitos numéricos.");
+            return null;
+        }
+        if (!nome.matches("[a-zA-Z\\s]+")) {
+            exibirErro("Nome deve conter apenas letras e espaços.");
+            return null;
+        }
+        if (nome.length() < 3) {
+            exibirErro("Nome deve ter pelo menos 3 caracteres.");
+            return null;
+        }
+        if (!email.matches("^[\\w-\\.]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
+            exibirErro("Email inválido.");
+            return null;
+        }
+        if (!numeroConta.matches("\\d{8}")) {
+            exibirErro("Número da conta deve ter exatamente 8 dígitos numéricos.");
+            return null;
+        }
+        Conta conta = new Conta(numeroConta, BigDecimal.ZERO);
+        return new Cliente(cpf, nome, email, conta);
     }
 
     private void cancelar() {
@@ -104,9 +187,10 @@ public class ClienteView extends JFrame {
     }
 
     private void limparCampos() {
+        txtCpf.setValue(null);
         txtNome.setText("");
         txtEmail.setText("");
-        txtTelefone.setText("");
+        txtConta.setValue(null);
     }
 
     public void mostrar() {
@@ -134,6 +218,7 @@ public class ClienteView extends JFrame {
         JOptionPane.showMessageDialog(this, mensagem, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /*
     public static void main(String[] args) {
         ClienteView clienteView = new ClienteView();
         clienteView.mostrar();
@@ -153,5 +238,6 @@ public class ClienteView extends JFrame {
     public void adicionarListenerCancelar(java.awt.event.ActionListener listener) {
         btnCancelar.addActionListener(listener);
     }
+        */
 
 }

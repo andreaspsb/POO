@@ -1,24 +1,25 @@
 package TG.Modelos;
 
-public class EnumStatusVenda {
-    public static final String ABERTA = "ABERTA";
-    public static final String CONCLUIDA = "CONCLUIDA";
-    public static final String CANCELADA = "CANCELADA";
+public enum EnumStatusVenda {
+    ABERTA("ABERTA"),
+    CONCLUIDA("CONCLUIDA"),
+    CANCELADA("CANCELADA");
+    
+    private final String status;
 
-    private EnumStatusVenda() {
-        // Construtor privado para evitar instância
+    EnumStatusVenda(String status) {
+        this.status = status;
     }
-
-    public EnumStatusVenda(String aberta2) {
-        if (!isValid(aberta2)) {
-            throw new IllegalArgumentException("Status inválido: " + aberta2);
-        }
-        // Aqui você poderia inicializar o status, se necessário
-        
+    
+    public String getStatus() {
+        return status;
     }
 
     public static boolean isValid(String status) {
-        return ABERTA.equals(status) || CONCLUIDA.equals(status) || CANCELADA.equals(status);
+        return status != null && 
+               (status.equals(ABERTA.name()) || 
+                status.equals(CONCLUIDA.name()) || 
+                status.equals(CANCELADA.name()));
     }
 
 }

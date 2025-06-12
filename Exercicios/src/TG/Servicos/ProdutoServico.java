@@ -44,9 +44,6 @@ public class ProdutoServico {
         if (produto.getNome().length() < 3) {
             throw new IllegalArgumentException("Nome do produto deve ter pelo menos 3 caracteres.");
         }
-        if (!produto.getNome().matches("[a-zA-Z\\s]+")) {
-            throw new IllegalArgumentException("Nome do produto deve conter apenas letras e espaços.");
-        }        
         if (produto.getPreco() < 0) {
             throw new IllegalArgumentException("Preço do produto não pode ser negativo.");
         }

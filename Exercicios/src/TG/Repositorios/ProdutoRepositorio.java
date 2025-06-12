@@ -16,7 +16,7 @@ import TG.Modelos.Produto;
  */
 public class ProdutoRepositorio {
 
-    private String caminhoArquivo = "/Exercicios/src/TG/Arquivos/produtos.txt";
+    private String caminhoArquivo = "Exercicios/src/TG/Arquivos/produtos.txt";
 
     public void adicionarProduto(Produto produto) {
         if (produto == null) {
@@ -68,13 +68,16 @@ public class ProdutoRepositorio {
     }
 
     private Produto parseProduto(String linha) {
+        linha = linha.replace("Produto{", "").replace("}", "").trim();
+
         String[] partes = linha.split(",");
         if (partes.length < 3) {
             return null; // Retornar null se a linha não estiver no formato esperado
-        }
-        String codigo = partes[0];
-        String nome = partes[1];
-        double preco = Double.parseDouble(partes[2]);
+        }        
+        
+        String codigo = partes[0].split("=")[1].trim().replace("\'", "");
+        String nome = partes[1].split("=")[1].trim().replace("\'", "");
+        double preco = Double.parseDouble(partes[2].split("=")[1].trim());
         return new Produto(codigo, nome, preco);
     }
 

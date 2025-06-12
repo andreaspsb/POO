@@ -25,6 +25,29 @@ public class ContaServico {
         contaRepositorio.adicionarConta(conta);
     }
 
+    public void adicionarConta(Conta conta) {
+        if (conta == null) {
+            throw new IllegalArgumentException("Conta não pode ser nula.");
+        }
+        if (conta.getNumero() == null || conta.getNumero().isEmpty()) {
+            throw new IllegalArgumentException("Número da conta não pode ser nulo ou vazio.");
+        }
+        if (conta.getNumero().length() != 8) {
+            throw new IllegalArgumentException("Número da conta deve ter exatamente 8 dígitos.");
+        }
+        if (!conta.getNumero().matches("\\d{8}")) {
+            throw new IllegalArgumentException("Número da conta deve conter apenas números.");
+        }
+        if (conta.getSaldo() == null) {
+            throw new IllegalArgumentException("Saldo da conta não pode ser nulo.");
+        }
+        if (contaRepositorio.buscarContaPorNumero(conta.getNumero()) != null) {
+            throw new IllegalArgumentException("Já existe uma conta cadastrada com este número.");
+        }
+
+        contaRepositorio.adicionarConta(conta);
+    }
+
     public Conta buscarContaPorNumero(String numero) {
         if (numero == null || numero.isEmpty()) {
             throw new IllegalArgumentException("Número da conta não pode ser nulo ou vazio.");

@@ -63,24 +63,24 @@ public class ClienteServico {
         if (!cliente.getEmail().matches("^[\\w-\\.]+@[\\w-]+\\.[a-zA-Z]{2,}$")) {
             throw new IllegalArgumentException("Email do cliente deve ser válido.");
         }
-        if (cliente.getConta().getNumero().length() < 5) {
-            throw new IllegalArgumentException("Número da conta deve ter pelo menos 5 caracteres.");
-        }
+        if (cliente.getConta().getNumero().length() != 8) {
+            throw new IllegalArgumentException("Número da conta deve ter exatamente 8 dígitos.");
+        }       
         if (!cliente.getConta().getNumero().matches("\\d+")) {
             throw new IllegalArgumentException("Número da conta deve conter apenas números.");
         }
         // Verifica se a conta já existe no repositório, se não existir, adiciona a conta
         ContaServico contaServico = new ContaServico();
-        if (contaServico.buscarContaPorNumero(cliente.getConta().getNumero()) == null) {
-            contaServico.adicionarConta(cliente.getConta());
-        }
 
         // Verifica se a conta já existe
         if (clienteRepositorio.listarClientes().stream()
                 .anyMatch(c -> c.getConta().getNumero().equals(cliente.getConta().getNumero()))) {
-            throw new IllegalArgumentException("Já existe uma conta cadastrada com este número.");
+            throw new IllegalArgumentException("Esta conta já está vinculada a outro cliente.");
         }
 
+        if (contaServico.buscarContaPorNumero(cliente.getConta().getNumero()) == null) {
+            contaServico.adicionarConta(cliente.getConta());
+        }
 
         clienteRepositorio.adicionarCliente(cliente);
     }

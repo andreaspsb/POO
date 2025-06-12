@@ -19,7 +19,7 @@ import TG.Modelos.Venda;
  */
 public class VendaRepositorio {
     
-    private String caminhoArquivo = "/Exercicios/src/TG/Arquivos/vendas.txt";
+    private String caminhoArquivo = "Exercicios/src/TG/Arquivos/vendas.txt";
 
     public void adicionarVenda(Venda venda) {
         if (venda == null) {
@@ -70,15 +70,20 @@ public class VendaRepositorio {
     }
 
     private Venda parseVenda(String linha) {
+        linha = linha.replace("Venda{", "").replace("}", "").trim();
+        
         String[] partes = linha.split(",");
         if (partes.length < 5) {
             return null; 
         }
-        String codigo = partes[0].trim();
-        LocalDateTime dataHoraAbertura = LocalDateTime.parse(partes[1].trim());
-        LocalDateTime dataHoraConclusao = LocalDateTime.parse(partes[2].trim());
-        EnumStatusVenda status = new EnumStatusVenda(partes[3].trim().toUpperCase());
-        String clienteId = partes[4].trim();
+        
+        String codigo = partes[0].split("=")[1].trim().replace("'", "");
+        LocalDateTime dataHoraAbertura = LocalDateTime.parse(partes[1].split("=")[1].trim());
+        LocalDateTime dataHoraConclusao = LocalDateTime.parse(partes[2].split("=")[1].trim());
+        EnumStatusVenda status = EnumStatusVenda.valueOf(partes[3].split("=")[1].trim().toUpperCase());
+
+        String clienteId = partes[4].split("=")[1].trim();
+
         ClienteRepositorio clienteRepositorio = new ClienteRepositorio();
         Cliente cliente = clienteRepositorio.buscarClientePorCPF(clienteId);
         Venda venda = new Venda(codigo, dataHoraAbertura, dataHoraConclusao, status, cliente);
@@ -106,6 +111,16 @@ public class VendaRepositorio {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Venda buscarVendaEmAberto() {
+        List<Venda> vendas = listarVendas();
+        for (Venda venda : vendas) {
+            if (venda.getStatus() == EnumStatusVenda.ABERTA) {
+                return venda;
+            }
+        }
+        return null; // Retorna null se não houver vendas em aberto
     }    
 
 }

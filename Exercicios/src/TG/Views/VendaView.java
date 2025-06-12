@@ -1,12 +1,14 @@
 package TG.Views;
 
 import javax.swing.*;
+
+import TG.Modelos.Cliente;
+import TG.Modelos.Produto;
 import TG.Modelos.Venda;
 import TG.Servicos.VendaServico;
 
 public class VendaView extends JFrame {
 
-    private JTextField txtCodigo;
     private JTextField txtCliente;
     private JButton btnAdicionarProduto;
     private JButton btnFinalizarVenda;
@@ -25,14 +27,6 @@ public class VendaView extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(null);
 
-        JLabel lblCodigo = new JLabel("Código:");
-        lblCodigo.setBounds(30, 30, 80, 25);
-        panel.add(lblCodigo);
-
-        txtCodigo = new JTextField();
-        txtCodigo.setBounds(120, 30, 200, 25);
-        panel.add(txtCodigo);
-
         JLabel lblCliente = new JLabel("Cliente:");
         lblCliente.setBounds(30, 70, 80, 25);
         panel.add(lblCliente);
@@ -47,7 +41,7 @@ public class VendaView extends JFrame {
         panel.add(btnAdicionarProduto);
 
         btnFinalizarVenda = new JButton("Finalizar Venda");
-        btnFinalizarVenda.setBounds(220, 120, 150, 30);        
+        btnFinalizarVenda.setBounds(220, 120, 150, 30);
         btnFinalizarVenda.addActionListener(e -> finalizarVenda());
         panel.add(btnFinalizarVenda);
 
@@ -57,7 +51,22 @@ public class VendaView extends JFrame {
         panel.add(btnCancelarVenda);
 
         add(panel);
-    }    
+    }
+
+    private void iniciarVenda() {
+        VendaServico vendaServico = new VendaServico();
+        try {
+            if (txtCliente.getText().isEmpty()) {
+                exibirErro("O campo Cliente não pode estar vazio.");
+                return;
+            }
+            vendaServico.adicionarVenda(new Cliente(txtCliente.getText()));
+            exibirSucesso("Venda iniciada com sucesso.");
+        } catch (Exception e) {
+            exibirErro("Erro ao iniciar a venda: " + e.getMessage());
+        }
+        txtCliente.setText("");
+    }
 
     private void adicionarProduto() {
         // Aqui você pode implementar a lógica para adicionar produtos à venda.
@@ -68,32 +77,32 @@ public class VendaView extends JFrame {
         exibirMensagem("Funcionalidade de adicionar produto ainda não implementada.");
 
         // Exemplo de como você poderia abrir uma nova janela para adicionar produtos:
-        // ProdutoView produtoView = new ProdutoView();
-        // produtoView.mostrar();
-        // produtoView.adicionarListenerSalvar(e -> {
-        //     Produto produto = produtoView.obterProduto();
-        //     if (produto != null) {
-        //         VendaServico vendaServico = new VendaServico();
-        //         try {
-        //             vendaServico.adicionarProdutoAVenda(produto);
-        //             exibirSucesso("Produto adicionado à venda com sucesso.");
-        //         } catch (Exception e) {
-        //             exibirErro("Erro ao adicionar produto à venda: " + e.getMessage());
-        //         }
-        //     }
-        // });
+        ProdutoView produtoView = new ProdutoView();
+        produtoView.mostrar();
+        produtoView.adicionarListenerSalvar(e -> {
+            Produto produto = produtoView.obterProduto();
+            if (produto != null) {
+                VendaServico vendaServico = new VendaServico();
+                try {
+                    vendaServico.adicionarProdutoAVenda(produto);
+                    exibirSucesso("Produto adicionado à venda com sucesso.");
+                } catch (Exception ex) {
+                    exibirErro("Erro ao adicionar produto à venda: " + ex.getMessage());
+                }
+            }
+        });
     }
 
     public Venda obterVenda() {
-        String codigo = txtCodigo.getText();
         String cliente = txtCliente.getText();
+        Cliente clienteObj = new Cliente(cliente);
 
-        if (codigo.isEmpty() || cliente.isEmpty()) {
+        if (cliente.isEmpty()) {
             exibirErro("Todos os campos devem ser preenchidos.");
             return null;
         }
 
-        Venda venda = new Venda(codigo, cliente);
+        Venda venda = new Venda(clienteObj);
         return venda;
     }
 
@@ -118,7 +127,6 @@ public class VendaView extends JFrame {
     }
 
     public void limparCampos() {
-        txtCodigo.setText("");
         txtCliente.setText("");
     }
 
@@ -146,35 +154,39 @@ public class VendaView extends JFrame {
     public void exibirSucesso(String mensagem) {
         JOptionPane.showMessageDialog(this, mensagem, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
     }
-    
-    
-    public static void main(String[] args) {
-        VendaView vendaView = new VendaView();
-        vendaView.mostrar();
 
-        vendaView.adicionarListenerAdicionarProduto(e -> {
-            vendaView.adicionarProduto();
-        });
-
-        vendaView.adicionarListenerFinalizarVenda(e -> {
-            vendaView.finalizarVenda();
-        });
-
-        vendaView.adicionarListenerCancelarVenda(e -> {
-            vendaView.cancelar();
-        });
-    }
-
-    public void adicionarListenerAdicionarProduto(java.awt.event.ActionListener listener) {
-        btnAdicionarProduto.addActionListener(listener);
-    }
-
-    public void adicionarListenerFinalizarVenda(java.awt.event.ActionListener listener) {
-        btnFinalizarVenda.addActionListener(listener);
-    }
-
-    public void adicionarListenerCancelarVenda(java.awt.event.ActionListener listener) {
-        btnCancelarVenda.addActionListener(listener);
-    }
+    /*
+     * public static void main(String[] args) {
+     * VendaView vendaView = new VendaView();
+     * vendaView.mostrar();
+     * 
+     * vendaView.adicionarListenerAdicionarProduto(e -> {
+     * vendaView.adicionarProduto();
+     * });
+     * 
+     * vendaView.adicionarListenerFinalizarVenda(e -> {
+     * vendaView.finalizarVenda();
+     * });
+     * 
+     * vendaView.adicionarListenerCancelarVenda(e -> {
+     * vendaView.cancelar();
+     * });
+     * }
+     * 
+     * public void adicionarListenerAdicionarProduto(java.awt.event.ActionListener
+     * listener) {
+     * btnAdicionarProduto.addActionListener(listener);
+     * }
+     * 
+     * public void adicionarListenerFinalizarVenda(java.awt.event.ActionListener
+     * listener) {
+     * btnFinalizarVenda.addActionListener(listener);
+     * }
+     * 
+     * public void adicionarListenerCancelarVenda(java.awt.event.ActionListener
+     * listener) {
+     * btnCancelarVenda.addActionListener(listener);
+     * }
+     */
 
 }

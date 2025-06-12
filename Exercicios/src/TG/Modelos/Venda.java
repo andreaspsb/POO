@@ -18,7 +18,7 @@ public class Venda {
         this.codigo = codigo;
 
         this.dateTimeAbertura = LocalDateTime.now();
-        this.status = new EnumStatusVenda(EnumStatusVenda.ABERTA);
+        this.status = EnumStatusVenda.ABERTA;
         
         if (cliente == null) {
             throw new IllegalArgumentException("Cliente não pode ser nulo.");
@@ -34,6 +34,40 @@ public class Venda {
         this.dateTimeConclusao = dateTimeConclusao;
         this.status = status;
         this.cliente = cliente;
+    }    
+
+    public void adicionarProduto(Produto produto, int quantidade) {
+        if (produto == null || quantidade <= 0) {
+            throw new IllegalArgumentException("Produto não pode ser nulo e quantidade deve ser maior que zero.");
+        }
+        if (produtos.containsKey(produto)) {
+            produtos.put(produto, produtos.get(produto) + quantidade);
+        } else {
+            produtos.put(produto, quantidade);
+        }
+    }
+
+    public double calcularTotal() {
+        double total = 0.0;
+        for (Map.Entry<Produto, Integer> entry : produtos.entrySet()) {
+            Produto produto = entry.getKey();
+            int quantidade = entry.getValue();
+            total += produto.getPreco() * quantidade;
+        }
+        return total;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Venda{")
+                .append("codigo='").append(codigo).append('\'')
+                .append(", data=").append(dateTimeAbertura)
+                .append(", dataConclusao=").append(dateTimeConclusao)
+                .append(", status=").append(status)
+                .append(", cliente=").append(cliente.getCpf())
+                .append('}');
+        return sb.toString();
     }
 
     public String getCodigo() {
@@ -85,40 +119,6 @@ public class Venda {
 
     public void setProdutos(Map<Produto, Integer> produtos) {
         this.produtos = produtos;
-    }
-
-    public void adicionarProduto(Produto produto, int quantidade) {
-        if (produto == null || quantidade <= 0) {
-            throw new IllegalArgumentException("Produto não pode ser nulo e quantidade deve ser maior que zero.");
-        }
-        if (produtos.containsKey(produto)) {
-            produtos.put(produto, produtos.get(produto) + quantidade);
-        } else {
-            produtos.put(produto, quantidade);
-        }
-    }
-
-    public double calcularTotal() {
-        double total = 0.0;
-        for (Map.Entry<Produto, Integer> entry : produtos.entrySet()) {
-            Produto produto = entry.getKey();
-            int quantidade = entry.getValue();
-            total += produto.getPreco() * quantidade;
-        }
-        return total;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Venda{")
-                .append("codigo='").append(codigo).append('\'')
-                .append(", data=").append(dateTimeAbertura)
-                .append(", dataConclusao=").append(dateTimeConclusao)
-                .append(", status=").append(status)
-                .append(", cliente=").append(cliente.getCpf())
-                .append('}');
-        return sb.toString();
     }
 
 }
