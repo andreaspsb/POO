@@ -1,9 +1,0 @@
-package ExercicioAvaliativo02;
-
-import java.util.Scanner;
-
-public interface Jogo {
-    Resultado executar(Scanner scanner);
-}
-
-// Arquivo movido para /src/ExercicioAvaliativo02/Jogo.java

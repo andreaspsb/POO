@@ -1,11 +1,6 @@
-package ExercicioAvaliativo02;
 
 import java.util.Random;
 import java.util.Scanner;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.URI;
 
 public class MenorOuMaior implements Jogo {
 

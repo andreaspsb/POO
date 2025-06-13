@@ -1,4 +1,3 @@
-package ExercicioAvaliativo02;
 
 public class Resultado {
 

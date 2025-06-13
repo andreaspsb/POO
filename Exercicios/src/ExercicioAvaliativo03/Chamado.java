@@ -1,5 +1,3 @@
-package ExercicioAvaliativo03;
-
 public class Chamado {
 
     private String cliente;
