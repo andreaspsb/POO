@@ -116,3 +116,5 @@ public class MenorOuMaior implements Jogo {
     }
 
 }
+
+// Arquivo movido para /src/ExercicioAvaliativo02/MenorOuMaior.java

@@ -27,4 +27,14 @@ public class Cliente {
         return this.reservas;
     }
 
+    public String getNome() {
+        return this.nome;
+    }
+    public String getTelefone() {
+        return this.telefone;
+    }
+    public String getEndereco() {
+        return this.endereco;
+    }
+
 }

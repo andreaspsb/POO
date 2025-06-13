@@ -8,12 +8,12 @@ public class Clube {
         this.qtdSocios = 0;
     }
 
-    public inscreveSocio() {
-        if (qtdSocios == this.qtdSocios.length) {
+    public void inscreveSocio(SocioAtleta socio) {
+        if (qtdSocios == this.sociosAtleta.length) {
             
         }
 
-        this.sociosAtleta[this.qtdSocios] = ;
+        this.sociosAtleta[this.qtdSocios] = socio;
         this.qtdSocios++;
     }
 

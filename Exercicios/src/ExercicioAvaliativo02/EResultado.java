@@ -1,7 +1,5 @@
 package ExercicioAvaliativo02;
 
-// Arquivo movido para /src/ExercicioAvaliativo02/EResultado.java
-
 public enum EResultado {
 
     VITORIA("Vitoria"),

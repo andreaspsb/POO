@@ -18,5 +18,21 @@ public class Voo {
     public Integer getNumero() {
         return this.numero;
     }
+    public Integer getVagas() {
+        return this.vagas;
+    }
+    public String getHorarioPartida() {
+        return this.horarioPartida;
+    }
+    public String getHorarioChegada() {
+        return this.horarioChegada;
+    }
+    public Aeroporto getOrigem() {
+        return this.origem;
+    }
+    public Aeroporto getDestino() {
+        return this.destino;
+    }
+    
 
 }

@@ -34,7 +34,7 @@ public class SocioAtleta {
         return categoria;
     }
 
-    public revisarAltura(int altura) {
+    public void revisarAltura(int altura) {
         this.altura = altura;
         this.categoria = this.calcularCategoria();
     }

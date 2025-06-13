@@ -1,6 +1,5 @@
 package ExercicioAvaliativo02;
 
-// Arquivo movido para /src/ExercicioAvaliativo02/Resultado.java
 public class Resultado {
 
     private String nomeJogo;
@@ -58,12 +57,4 @@ public class Resultado {
                 ", sorteado=" + sorteado +
                 '}';
     }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Resultado)) return false;
-        Resultado resultado1 = (Resultado) o;
-        return tentativas == resultado1.tentativas && sorteado == resultado1.sorteado && nomeJogo.equals(resultado1.nomeJogo) && resultado == resultado1.resultado;
-    }
-    
 }

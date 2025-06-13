@@ -58,7 +58,4 @@ public class App {
         System.out.println("Saindo do jogo...");
         scanner.close();
     }
-    
 }
-
-// Arquivo movido para /src/ExercicioAvaliativo02/App.java

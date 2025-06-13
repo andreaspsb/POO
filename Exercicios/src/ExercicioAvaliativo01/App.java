@@ -1,18 +1,20 @@
 package ExercicioAvaliativo01;
 
-import java.util.Arrays;
 import java.util.ArrayList;
-
 
 public class App {
 
     private static ArrayList<Cliente> clientes = new ArrayList<Cliente>();
     private static ArrayList<Voo> voos = new ArrayList<Voo>();
+    private static ArrayList<Aeroporto> aeroportos = new ArrayList<Aeroporto>();
 
     public static void main(String[] args) {
         Aeroporto aeroporto1 = new Aeroporto("Salgado Filho", "SBPA","Porto Alegre");
         Aeroporto aeroporto2 = new Aeroporto("João Simões Lopes Neto", "PET","Pelotas");
         Aeroporto aeroporto3 = new Aeroporto("Aeroporto Internacional de São Paulo/Guarulhos – Governador André Franco Montoro", "GRU","Guarulhos");
+        aeroportos.add(aeroporto1);
+        aeroportos.add(aeroporto2);
+        aeroportos.add(aeroporto3);
         
         Cliente cliente1 = new Cliente("Joao da Silva", "51912345678", "Rua tal, 123", "12345678901");
         Cliente cliente2 = new Cliente("Bezerra da Silva", "51912345679", "Rua tal, 124", "12345678902");
@@ -52,7 +54,7 @@ public class App {
             System.out.println(obterCodigosVoos(cliente.getCpf()));
         }
     }
-
+    
     public static ArrayList<Integer> obterCodigosVoos(String cpf) {
         ArrayList<Integer> codigos = new ArrayList<Integer>();
         for (Cliente cliente : clientes) {

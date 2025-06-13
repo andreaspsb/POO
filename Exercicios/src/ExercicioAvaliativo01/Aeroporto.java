@@ -10,4 +10,14 @@ public class Aeroporto {
         this.cidade = cidade;
     }
 
+    public String getNome() {
+        return this.nome;
+    }
+    public String getCodigo() {
+        return this.codigo;
+    }
+    public String getCidade() {
+        return this.cidade;
+    }
+
 }
