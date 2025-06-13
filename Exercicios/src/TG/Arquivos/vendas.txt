@@ -1,0 +1,4 @@
+Venda{codigo='0001', data=2025-06-13T17:49:56.715179420, dataConclusao=null, status=CANCELADA, cliente=00362372055}
+Venda{codigo='0002', data=2025-06-13T17:54:17.550009626, dataConclusao=null, status=CANCELADA, cliente=00362372055}
+Venda{codigo='0003', data=2025-06-13T17:54:51.003954809, dataConclusao=null, status=CANCELADA, cliente=00362372055}
+Venda{codigo='0004', data=2025-06-13T17:57:32.953136075, dataConclusao=2025-06-13T17:57:40.971036067, status=CONCLUIDA, cliente=00362372055}

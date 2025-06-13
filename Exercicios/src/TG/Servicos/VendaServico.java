@@ -6,7 +6,6 @@ import java.util.List;
 
 import TG.Modelos.Cliente;
 import TG.Modelos.EnumStatusVenda;
-import TG.Modelos.Produto;
 import TG.Modelos.Venda;
 import TG.Repositorios.VendaRepositorio;
 
@@ -62,6 +61,7 @@ public class VendaServico {
         venda.setDateTimeConclusao(LocalDateTime.now());
         venda.setStatus(EnumStatusVenda.CONCLUIDA);
 
+        vendaRepositorio.adicionarItensVenda(venda);
         vendaRepositorio.atualizarVenda(venda);
         
     }
@@ -89,19 +89,19 @@ public class VendaServico {
         String ultimoCodigo = vendas.get(vendas.size() - 1).getCodigo();
         int proximoNumero = Integer.parseInt(ultimoCodigo) + 1;
         return String.format("%04d", proximoNumero); // Formata para 4 dígitos
+    }         
+
+    // Adiciona método público para atualizar venda
+    public void atualizarVenda(Venda venda) {
+        vendaRepositorio.atualizarVenda(venda);
     }
 
-    public void adicionarProdutoAVenda(Produto produto) {
-        if (produto == null) {
-            throw new IllegalArgumentException("Produto não pode ser nulo.");
+    public Venda buscarVendaEmAberto() {
+        Venda vendaEmAberto = vendaRepositorio.buscarVendaEmAberto();
+        if (vendaEmAberto == null) {
+            throw new IllegalStateException("Não há venda em aberto.");
         }
-        // Aqui você pode implementar a lógica para adicionar o produto à venda atual.
-        Venda vendaAtual = vendaRepositorio.buscarVendaEmAberto(); // Método hipotético para buscar a venda em aberto
-        if (vendaAtual == null) {
-            throw new IllegalStateException("Não há venda em aberto para adicionar o produto.");
-        }
-        vendaAtual.adicionarProduto(produto, 1); // Adiciona o produto com quantidade 1
-        vendaRepositorio.atualizarVenda(vendaAtual); // Atualiza a venda no repositório                
+        return vendaEmAberto;
     }
 
 }

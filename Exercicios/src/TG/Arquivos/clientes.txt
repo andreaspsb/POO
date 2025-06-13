@@ -1,2 +1,3 @@
 Cliente{cpf='00362372055', nome='TESTE', email='teste@teste.com', conta=12345678}
 Cliente{cpf='00362372056', nome='SADFDS', email='sadfas@asfd.com', conta=12345679}
+Cliente{cpf='12345678901', nome='TESTE', email='TESTE@TESTE.COM', conta=00000000}

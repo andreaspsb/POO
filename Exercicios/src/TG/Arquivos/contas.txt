@@ -1,2 +1,3 @@
-Conta{numero='12345678', saldo=0}
-Conta{numero='12345679', saldo=0}
+Conta{numero='12345678', saldo=5.0}
+Conta{numero='12345679', saldo=10}
+Conta{numero='00000000', saldo=0}

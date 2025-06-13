@@ -32,6 +32,13 @@ public class VendaRepositorio {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+    }
+
+    public void adicionarItensVenda(Venda venda) {
+        if (venda == null || venda.getProdutos() == null || venda.getProdutos().isEmpty()) {
+            throw new IllegalArgumentException("Venda ou produtos não podem ser nulos ou vazios.");
+        }
 
         VendaItemRepositorio vendaItemRepositorio = new VendaItemRepositorio();
         vendaItemRepositorio.adicionarItensVenda(venda);
@@ -79,7 +86,15 @@ public class VendaRepositorio {
         
         String codigo = partes[0].split("=")[1].trim().replace("'", "");
         LocalDateTime dataHoraAbertura = LocalDateTime.parse(partes[1].split("=")[1].trim());
-        LocalDateTime dataHoraConclusao = LocalDateTime.parse(partes[2].split("=")[1].trim());
+
+        LocalDateTime dataHoraConclusao;
+        if (partes[2].split("=").length < 2 || partes[2].split("=")[1].trim().isEmpty() || partes[2].split("=")[1].trim().equals("null")) {
+            dataHoraConclusao = null;
+        }
+        else {
+            dataHoraConclusao = LocalDateTime.parse(partes[2].split("=")[1].trim());
+        }        
+
         EnumStatusVenda status = EnumStatusVenda.valueOf(partes[3].split("=")[1].trim().toUpperCase());
 
         String clienteId = partes[4].split("=")[1].trim();

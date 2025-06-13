@@ -24,9 +24,7 @@ public class VendaItemRepositorio {
         if (venda == null || venda.getCodigo() == null || venda.getCodigo().isEmpty()) {
             throw new IllegalArgumentException("Venda ou código da venda não pode ser nulo ou vazio.");
         }
-        if (venda.getProdutos() == null || venda.getProdutos().isEmpty()) {
-            throw new IllegalArgumentException("Venda deve conter pelo menos um produto.");
-        }
+                
         String codigoVenda = venda.getCodigo();
         String codigoProduto;
         int quantidade;

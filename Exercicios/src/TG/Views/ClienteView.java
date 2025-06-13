@@ -181,6 +181,16 @@ public class ClienteView extends JFrame {
     }
 
     private void cancelar() {
+        boolean preenchido = !txtCpf.getText().trim().isEmpty() ||
+                             !txtNome.getText().trim().isEmpty() ||
+                             !txtEmail.getText().trim().isEmpty() ||
+                             !txtConta.getText().trim().isEmpty();
+        if (preenchido) {
+            int resp = JOptionPane.showConfirmDialog(this, "Há campos preenchidos. Deseja realmente cancelar?", "Confirmação", JOptionPane.YES_NO_OPTION);
+            if (resp != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
         limparCampos();
         exibirMensagem("Cadastro cancelado.");
         fechar();

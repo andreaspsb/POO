@@ -54,7 +54,7 @@ public class ProdutoServico {
         produtoRepositorio.adicionarProduto(produto);
     }
 
-    public Produto buscarProdutoPorId(String codigo) {
+    public Produto buscarProdutoPorCodigo(String codigo) {
         if (codigo == null || codigo.isEmpty()) {
             throw new IllegalArgumentException("Código do produto não pode ser nulo ou vazio.");
         }
@@ -63,6 +63,6 @@ public class ProdutoServico {
 
     public List<Produto> listarProdutos() {
         return produtoRepositorio.listarProdutos();
-    }
+    }    
     
 }

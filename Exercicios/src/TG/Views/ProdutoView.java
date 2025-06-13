@@ -138,6 +138,15 @@ public class ProdutoView extends JFrame {
     }
 
     private void cancelar() {
+        boolean preenchido = !txtCodigo.getText().trim().isEmpty() ||
+                             !txtNome.getText().trim().isEmpty() ||
+                             txtPreco.getValue() != null;
+        if (preenchido) {
+            int resp = JOptionPane.showConfirmDialog(this, "Há campos preenchidos. Deseja realmente cancelar?", "Confirmação", JOptionPane.YES_NO_OPTION);
+            if (resp != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
         limparCampos();
         exibirMensagem("Cadastro cancelado.");
         fechar();
