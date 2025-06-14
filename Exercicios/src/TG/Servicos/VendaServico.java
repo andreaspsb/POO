@@ -1,6 +1,5 @@
 package TG.Servicos;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -8,6 +7,12 @@ import TG.Modelos.Cliente;
 import TG.Modelos.EnumStatusVenda;
 import TG.Modelos.Venda;
 import TG.Repositorios.VendaRepositorio;
+import TG.Excecoes.VendaInvalidaException;
+import TG.Excecoes.SaldoInsuficienteException;
+import TG.Excecoes.DadoInvalidoException;
+import TG.Excecoes.ArquivoRepositorioException;
+import TG.Excecoes.ContaNaoEncontradaException;
+import TG.Excecoes.OperacaoNaoPermitidaException;
 
 /**
  * Classe responsável por gerenciar os serviços relacionados a vendas.
@@ -26,55 +31,50 @@ public class VendaServico {
      *
      * @param venda A venda a ser adicionada.
      */
-    public void adicionarVenda(Cliente cliente) {
+    public void adicionarVenda(Cliente cliente) throws VendaInvalidaException, DadoInvalidoException, ArquivoRepositorioException {
         if (cliente == null) {
-            throw new IllegalArgumentException("Cliente não pode ser nulo.");
+            throw new DadoInvalidoException("Cliente não pode ser nulo.");
         }
-        //obter o próximo código de venda de um repositório ou serviço
         String codigo = this.obterProximoCodigoVenda();
-
         Venda venda = new Venda(codigo, cliente);
         vendaRepositorio.adicionarVenda(venda);
-
     }
 
     //método para finalizar a venda
-    public void finalizarVenda(Venda venda) {
+    public void finalizarVenda(Venda venda) throws VendaInvalidaException, SaldoInsuficienteException, DadoInvalidoException, ArquivoRepositorioException, ContaNaoEncontradaException, OperacaoNaoPermitidaException {
         if (venda == null) {
-            throw new IllegalArgumentException("Venda não pode ser nula.");
+            throw new DadoInvalidoException("Venda não pode ser nula.");
         }
         if (venda.getProdutos().isEmpty()) {
-            throw new IllegalStateException("Não é possível finalizar a venda sem produtos.");
+            throw new VendaInvalidaException("Não é possível finalizar a venda sem produtos.");
         }
-
         double total = venda.calcularTotal();
         if (total <= 0) {
-            throw new IllegalStateException("O total da venda deve ser maior que zero.");
+            throw new VendaInvalidaException("O total da venda deve ser maior que zero.");
         }
-        if (venda.getCliente().getConta().getSaldo().compareTo(BigDecimal.valueOf(total)) < 0) {
-            throw new IllegalStateException("Saldo insuficiente na conta do cliente para finalizar a venda.");              
+        if (venda.getCliente().getConta().getSaldo().compareTo(java.math.BigDecimal.valueOf(total)) < 0) {
+            throw new SaldoInsuficienteException("Saldo insuficiente na conta do cliente para finalizar a venda.");
         }
-
         ContaServico contaServico = new ContaServico();
-        contaServico.debitar(venda.getCliente().getConta().getNumero(), BigDecimal.valueOf(total));
-
+        contaServico.debitar(venda.getCliente().getConta().getNumero(), java.math.BigDecimal.valueOf(total));
         venda.setDateTimeConclusao(LocalDateTime.now());
         venda.setStatus(EnumStatusVenda.CONCLUIDA);
-
         vendaRepositorio.adicionarItensVenda(venda);
         vendaRepositorio.atualizarVenda(venda);
-        
     }
 
-    public Venda buscarVendaPorCodigo(String codigo) {
+    public Venda buscarVendaPorCodigo(String codigo) throws DadoInvalidoException, ArquivoRepositorioException {
+        if (codigo == null || codigo.isEmpty()) {
+            throw new DadoInvalidoException("Código da venda não pode ser nulo ou vazio.");
+        }
         return vendaRepositorio.buscarVendaPorCodigo(codigo);
     }
 
-    public List<Venda> listarVendas() {
+    public List<Venda> listarVendas() throws DadoInvalidoException, ArquivoRepositorioException {
         return vendaRepositorio.listarVendas();
     }
 
-    private String obterProximoCodigoVenda() {
+    private String obterProximoCodigoVenda() throws ArquivoRepositorioException, DadoInvalidoException {
         List<Venda> vendas = listarVendas();
         if (vendas.isEmpty()) {
             return "0001"; // Retorna o primeiro código se não houver vendas
@@ -92,14 +92,17 @@ public class VendaServico {
     }         
 
     // Adiciona método público para atualizar venda
-    public void atualizarVenda(Venda venda) {
+    public void atualizarVenda(Venda venda) throws DadoInvalidoException, ArquivoRepositorioException {
+        if (venda == null) {
+            throw new DadoInvalidoException("Venda não pode ser nula.");
+        }
         vendaRepositorio.atualizarVenda(venda);
     }
 
-    public Venda buscarVendaEmAberto() {
+    public Venda buscarVendaEmAberto() throws VendaInvalidaException, ArquivoRepositorioException, DadoInvalidoException {
         Venda vendaEmAberto = vendaRepositorio.buscarVendaEmAberto();
         if (vendaEmAberto == null) {
-            throw new IllegalStateException("Não há venda em aberto.");
+            throw new VendaInvalidaException("Não há venda em aberto.");
         }
         return vendaEmAberto;
     }

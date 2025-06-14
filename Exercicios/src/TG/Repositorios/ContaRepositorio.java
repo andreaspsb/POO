@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import TG.Excecoes.ArquivoRepositorioException;
+import TG.Excecoes.DadoInvalidoException;
 import TG.Modelos.Conta;
 
 /**
@@ -19,46 +21,53 @@ public class ContaRepositorio{
 
     private String caminhoArquivo = "Exercicios/src/TG/Arquivos/contas.txt";    
 
-    public void adicionarConta(Conta conta) {
+    public void adicionarConta(Conta conta) throws ArquivoRepositorioException, DadoInvalidoException {
         if (conta == null) {
-            throw new IllegalArgumentException("Conta não pode ser nula");
+            throw new DadoInvalidoException("Conta não pode ser nula");
         }
-
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo, true))) {
             writer.append(conta.toString());
             writer.newLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ArquivoRepositorioException("Erro ao adicionar conta ao arquivo.", e);
         }
     }
 
-    public Conta buscarContaPorNumero(String numero) {
+    public Conta buscarContaPorNumero(String numero) throws ArquivoRepositorioException, DadoInvalidoException {
         if (numero == null || numero.isEmpty()) {
-            throw new IllegalArgumentException("Número da conta não pode ser nulo ou vazio");
+            throw new DadoInvalidoException("Número da conta não pode ser nulo ou vazio");
         }
-
-        List<Conta> contas = listarContas();
-
+        List<Conta> contas;
+        try {
+            contas = listarContas();
+        } catch (DadoInvalidoException e) {
+            throw new DadoInvalidoException("Erro ao listar contas: " + e.getMessage());
+        }
         for (Conta conta : contas) {
             if (conta.getNumero().equals(numero)) {
                 return conta;
             }
         }
-        return null; // Retornar a conta encontrada ou null se não encontrada
+        return null;
     }
 
-    public List<Conta> listarContas() {
+    public List<Conta> listarContas() throws ArquivoRepositorioException, DadoInvalidoException {
         List<Conta> contas = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(caminhoArquivo))) {
             String linha;
             while ((linha = reader.readLine()) != null) {
-                Conta conta = parseConta(linha);
+                Conta conta;
+                try {
+                    conta = parseConta(linha);
+                } catch (Exception e) {
+                    throw new DadoInvalidoException("Erro ao fazer parsing da conta: " + e.getMessage());
+                }
                 if (conta != null) {
                     contas.add(conta);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ArquivoRepositorioException("Erro ao ler contas do arquivo.", e);
         }
         return contas;
     }
@@ -77,17 +86,25 @@ public class ContaRepositorio{
         } catch (NumberFormatException e) {
             return null; // Retornar null se o saldo não for um número válido
         }
-        return new Conta(numero, saldo);
+        try {
+            return new Conta(numero, saldo);
+        } catch (Exception e) {
+            System.err.println("Erro ao criar conta: " + e.getMessage());
+            return null;
+        }
     }
 
-    public void atualizarConta(Conta conta) {
+    public void atualizarConta(Conta conta) throws ArquivoRepositorioException, DadoInvalidoException {
         if (conta == null) {
-            throw new IllegalArgumentException("Conta não pode ser nula");
+            throw new DadoInvalidoException("Conta não pode ser nula");
         }
-
-        List<Conta> contas = listarContas();
+        List<Conta> contas;
+        try {
+            contas = listarContas();
+        } catch (DadoInvalidoException e) {
+            throw new DadoInvalidoException("Erro ao listar contas: " + e.getMessage());
+        }
         boolean encontrado = false;
-
         for (int i = 0; i < contas.size(); i++) {
             if (contas.get(i).getNumero().equals(conta.getNumero())) {
                 contas.set(i, conta);
@@ -95,21 +112,17 @@ public class ContaRepositorio{
                 break;
             }
         }
-
         if (!encontrado) {
-            throw new IllegalArgumentException("Conta com número " + conta.getNumero() + " não encontrada.");
+            throw new DadoInvalidoException("Conta com número " + conta.getNumero() + " não encontrada.");
         }
-
-        // Reescrever o arquivo com as contas atualizadas
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo))) {
             for (Conta c : contas) {
                 writer.append(c.toString());
                 writer.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ArquivoRepositorioException("Erro ao atualizar conta no arquivo.", e);
         }
-        
     }
     
 

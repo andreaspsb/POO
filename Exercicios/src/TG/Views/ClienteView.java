@@ -7,6 +7,11 @@ import TG.Modelos.Cliente;
 import TG.Modelos.Conta;
 import TG.Servicos.ClienteServico;
 import javax.swing.text.*;
+import TG.Excecoes.ClienteJaCadastradoException;
+import TG.Excecoes.ContaNaoEncontradaException;
+import TG.Excecoes.ArquivoRepositorioException;
+import TG.Excecoes.DadoInvalidoException;
+import TG.Util.MensagensUtil;
 
 public class ClienteView extends JFrame {
 
@@ -134,13 +139,19 @@ public class ClienteView extends JFrame {
             exibirErro("Verifique os campos preenchidos.");
             return;
         }
-        
         ClienteServico clienteServico = new ClienteServico();
-        
         try {
             clienteServico.adicionarCliente(cliente);
             exibirSucesso("Cliente cadastrado com sucesso!");
             limparCampos();
+        } catch (ClienteJaCadastradoException ex) {
+            exibirErro("Já existe um cliente cadastrado com este CPF.");
+        } catch (ContaNaoEncontradaException ex) {
+            exibirErro("Conta já vinculada a outro cliente.");
+        } catch (ArquivoRepositorioException ex) {
+            exibirErro(MensagensUtil.ERRO_ARQUIVO + ex.getMessage());
+        } catch (DadoInvalidoException ex) {
+            exibirErro(MensagensUtil.DADOS_INVALIDOS + ex.getMessage());
         } catch (Exception ex) {
             exibirErro("Erro ao cadastrar cliente: " + ex.getMessage());
         }
@@ -151,9 +162,8 @@ public class ClienteView extends JFrame {
         String nome = txtNome.getText();
         String email = txtEmail.getText();
         String numeroConta = txtConta.getText();
-
         if (cpf.isEmpty() || nome.isEmpty() || email.isEmpty() || numeroConta.isEmpty()) {
-            exibirErro("Todos os campos devem ser preenchidos.");
+            exibirErro(MensagensUtil.CAMPOS_OBRIGATORIOS);
             return null;
         }
         if (!cpf.matches("\\d{11}")) {
@@ -176,8 +186,13 @@ public class ClienteView extends JFrame {
             exibirErro("Número da conta deve ter exatamente 8 dígitos numéricos.");
             return null;
         }
-        Conta conta = new Conta(numeroConta, BigDecimal.ZERO);
-        return new Cliente(cpf, nome, email, conta);
+        try {
+            Conta conta = new Conta(numeroConta, BigDecimal.ZERO);
+            return new Cliente(cpf, nome, email, conta);
+        } catch (DadoInvalidoException ex) {
+            exibirErro("Dados inválidos: " + ex.getMessage());
+            return null;
+        }
     }
 
     private void cancelar() {

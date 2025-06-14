@@ -9,6 +9,12 @@ import javax.swing.text.MaskFormatter;
 import javax.swing.text.NumberFormatter;
 import java.text.NumberFormat;
 import java.util.Locale;
+import TG.Excecoes.ContaNaoEncontradaException;
+import TG.Excecoes.SaldoInsuficienteException;
+import TG.Excecoes.OperacaoNaoPermitidaException;
+import TG.Excecoes.ArquivoRepositorioException;
+import TG.Excecoes.DadoInvalidoException;
+import TG.Util.MensagensUtil;
 
 public class MonetizacaoView extends JFrame {
     private JFormattedTextField txtConta;
@@ -115,6 +121,14 @@ public class MonetizacaoView extends JFrame {
             double valor = ((Number) txtValor.getValue()).doubleValue();
             contaServico.depositar(conta, BigDecimal.valueOf(valor));
             lblResultado.setText("Depósito realizado com sucesso!");
+        } catch (ContaNaoEncontradaException ex) {
+            lblResultado.setText("Conta não encontrada.");
+        } catch (OperacaoNaoPermitidaException ex) {
+            lblResultado.setText(ex.getMessage());
+        } catch (ArquivoRepositorioException ex) {
+            lblResultado.setText(MensagensUtil.ERRO_ARQUIVO + ex.getMessage());
+        } catch (DadoInvalidoException ex) {
+            lblResultado.setText(MensagensUtil.DADOS_INVALIDOS + ex.getMessage());
         } catch (Exception ex) {
             lblResultado.setText("Erro: " + ex.getMessage());
         }
@@ -127,6 +141,16 @@ public class MonetizacaoView extends JFrame {
             double valor = ((Number) txtValor.getValue()).doubleValue();
             contaServico.transferir(contaOrigem, contaDestino, BigDecimal.valueOf(valor));
             lblResultado.setText("Transferência realizada com sucesso!");
+        } catch (ContaNaoEncontradaException ex) {
+            lblResultado.setText("Conta de origem ou destino não encontrada.");
+        } catch (SaldoInsuficienteException ex) {
+            lblResultado.setText("Saldo insuficiente para transferência.");
+        } catch (OperacaoNaoPermitidaException ex) {
+            lblResultado.setText(ex.getMessage());
+        } catch (ArquivoRepositorioException ex) {
+            lblResultado.setText(MensagensUtil.ERRO_ARQUIVO + ex.getMessage());
+        } catch (DadoInvalidoException ex) {
+            lblResultado.setText(MensagensUtil.DADOS_INVALIDOS + ex.getMessage());
         } catch (Exception ex) {
             lblResultado.setText("Erro: " + ex.getMessage());
         }
@@ -137,6 +161,12 @@ public class MonetizacaoView extends JFrame {
             String conta = txtConta.getText();
             BigDecimal saldo = contaServico.consultarSaldo(conta);
             lblResultado.setText("Saldo: R$ " + saldo);
+        } catch (ContaNaoEncontradaException ex) {
+            lblResultado.setText("Conta não encontrada.");
+        } catch (ArquivoRepositorioException ex) {
+            lblResultado.setText(MensagensUtil.ERRO_ARQUIVO + ex.getMessage());
+        } catch (DadoInvalidoException ex) {
+            lblResultado.setText(MensagensUtil.DADOS_INVALIDOS + ex.getMessage());
         } catch (Exception ex) {
             lblResultado.setText("Erro: " + ex.getMessage());
         }

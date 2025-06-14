@@ -16,6 +16,11 @@ import TG.Modelos.EnumStatusVenda;
 import TG.Servicos.ProdutoServico;
 import TG.Servicos.VendaServico;
 import TG.Servicos.ClienteServico;
+import TG.Excecoes.VendaInvalidaException;
+import TG.Excecoes.SaldoInsuficienteException;
+import TG.Excecoes.ArquivoRepositorioException;
+import TG.Excecoes.DadoInvalidoException;
+import TG.Util.MensagensUtil;
 
 public class VendaView extends JFrame {
 
@@ -160,9 +165,13 @@ public class VendaView extends JFrame {
 
     private void carregarProdutosCombo() {
         comboProdutos.removeAllItems();
-        List<Produto> produtos = produtoServico.listarProdutos();
-        for (Produto p : produtos) {
-            comboProdutos.addItem(p);
+        try {
+            List<Produto> produtos = produtoServico.listarProdutos();
+            for (Produto p : produtos) {
+                comboProdutos.addItem(p);
+            }
+        } catch (ArquivoRepositorioException | DadoInvalidoException ex) {
+            exibirErro("Erro ao carregar produtos: " + ex.getMessage());
         }
         comboProdutos.setRenderer(new DefaultListCellRenderer() {
             @Override
@@ -212,19 +221,29 @@ public class VendaView extends JFrame {
         try {
             ClienteServico clienteServico = new ClienteServico();
             if (clienteServico.buscarClientePorCPF(cpf) == null) {
-                exibirErro("CPF não encontrado no cadastro de clientes.");
+                exibirErro(MensagensUtil.ERRO_CLIENTE_NAO_ENCONTRADO);
+                return;
+            }
+            Cliente cliente;
+            try {
+                cliente = new Cliente(cpf);
+            } catch (DadoInvalidoException ex) {
+                exibirErro(MensagensUtil.CAMPOS_OBRIGATORIOS);
                 return;
             }
             VendaServico vendaServico = new VendaServico();
-            vendaServico.adicionarVenda(new Cliente(cpf));
-
-            // Buscar a venda em aberto para manipulação posterior
+            vendaServico.adicionarVenda(cliente);
             List<Venda> vendas = vendaServico.listarVendas();
             vendaAtual = vendas.get(vendas.size() - 1);
-
             vendaAtual = vendaServico.buscarVendaPorCodigo(
                     vendaServico.listarVendas().get(vendaServico.listarVendas().size() - 1).getCodigo());
             exibirSucesso("Venda iniciada com sucesso.");
+        } catch (VendaInvalidaException ex) {
+            exibirErro(ex.getMessage());
+            return;
+        } catch (ArquivoRepositorioException ex) {
+            exibirErro(MensagensUtil.ERRO_ARQUIVO + ex.getMessage());
+            return;
         } catch (Exception ex) {
             exibirErro("Erro ao iniciar a venda: " + ex.getMessage());
             return;
@@ -268,7 +287,13 @@ public class VendaView extends JFrame {
 
     public Venda obterVenda() {
         String cliente = txtCliente.getText();
-        Cliente clienteObj = new Cliente(cliente);
+        Cliente clienteObj;
+        try {
+            clienteObj = new Cliente(cliente);
+        } catch (DadoInvalidoException ex) {
+            exibirErro("Dados inválidos: " + ex.getMessage());
+            return null;
+        }
         if (cliente.isEmpty()) {
             exibirErro("Todos os campos devem ser preenchidos.");
             return null;
@@ -290,19 +315,23 @@ public class VendaView extends JFrame {
             exibirErro("Adicione produtos à venda antes de finalizar.");
             return;
         }
-        // Adiciona os produtos da tabela à venda atual
         for (int i = 0; i < tabelaModel.getRowCount(); i++) {
             String codigoProduto = tabelaModel.getValueAt(i, 0).toString();
             int quantidade = Integer.parseInt(tabelaModel.getValueAt(i, 1).toString());
-            Produto produto = produtoServico.buscarProdutoPorCodigo(codigoProduto);
+            Produto produto = null;
+            try {
+                produto = produtoServico.buscarProdutoPorCodigo(codigoProduto);
+            } catch (ArquivoRepositorioException | DadoInvalidoException ex) {
+                exibirErro("Erro ao buscar produto: " + ex.getMessage());
+                return;
+            }
             if (produto != null) {
                 vendaAtual.adicionarProduto(produto, quantidade);
             } else {
-                exibirErro("Produto com código " + codigoProduto + " não encontrado.");
+                exibirErro(String.format(MensagensUtil.ERRO_PRODUTO_NAO_ENCONTRADO, codigoProduto));
                 return;
             }
         }
-        // Finaliza a venda
         VendaServico vendaServico = new VendaServico();
         try {
             vendaServico.finalizarVenda(vendaAtual);
@@ -310,8 +339,14 @@ public class VendaView extends JFrame {
             limparCampos();
             vendaAtual = null;
             fechar();
+        } catch (SaldoInsuficienteException ex) {
+            exibirErro(MensagensUtil.ERRO_SALDO);
+        } catch (VendaInvalidaException ex) {
+            exibirErro(ex.getMessage());
+        } catch (ArquivoRepositorioException | DadoInvalidoException ex) {
+            exibirErro("Erro ao finalizar venda: " + ex.getMessage());
         } catch (Exception e) {
-            exibirErro("Erro ao finalizar a venda: " + e.getMessage());
+            exibirErro("Erro inesperado ao finalizar a venda: " + e.getMessage());
         }
     }
 
@@ -373,6 +408,8 @@ public class VendaView extends JFrame {
         JOptionPane.showMessageDialog(this, mensagem, "Sucesso", JOptionPane.INFORMATION_MESSAGE);
     }
 
+}
+
     /*
      * public static void main(String[] args) {
      * VendaView vendaView = new VendaView();
@@ -406,4 +443,3 @@ public class VendaView extends JFrame {
      * btnCancelarVenda.addActionListener(listener);
      * }
      */
-}

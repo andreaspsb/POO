@@ -5,6 +5,11 @@ import java.util.List;
 
 import TG.Modelos.Conta;
 import TG.Repositorios.ContaRepositorio;
+import TG.Excecoes.ContaNaoEncontradaException;
+import TG.Excecoes.SaldoInsuficienteException;
+import TG.Excecoes.OperacaoNaoPermitidaException;
+import TG.Excecoes.ArquivoRepositorioException;
+import TG.Excecoes.DadoInvalidoException;
 
 /**
  * Classe responsável por gerenciar os serviços relacionados a contas.
@@ -18,135 +23,129 @@ public class ContaServico {
         this.contaRepositorio = new ContaRepositorio();
     }
     
-    public void adicionarConta() {
+    public void adicionarConta() throws ArquivoRepositorioException, DadoInvalidoException {
         String numero = obterProximoNumeroConta();
         Conta conta = new Conta(numero, BigDecimal.ZERO);        
 
         contaRepositorio.adicionarConta(conta);
     }
 
-    public void adicionarConta(Conta conta) {
+    public void adicionarConta(Conta conta) throws ContaNaoEncontradaException, ArquivoRepositorioException, DadoInvalidoException {
         if (conta == null) {
-            throw new IllegalArgumentException("Conta não pode ser nula.");
+            throw new DadoInvalidoException("Conta não pode ser nula.");
         }
         if (conta.getNumero() == null || conta.getNumero().isEmpty()) {
-            throw new IllegalArgumentException("Número da conta não pode ser nulo ou vazio.");
+            throw new DadoInvalidoException("Número da conta não pode ser nulo ou vazio.");
         }
         if (conta.getNumero().length() != 8) {
-            throw new IllegalArgumentException("Número da conta deve ter exatamente 8 dígitos.");
+            throw new DadoInvalidoException("Número da conta deve ter exatamente 8 dígitos.");
         }
         if (!conta.getNumero().matches("\\d{8}")) {
-            throw new IllegalArgumentException("Número da conta deve conter apenas números.");
+            throw new DadoInvalidoException("Número da conta deve conter apenas números.");
         }
         if (conta.getSaldo() == null) {
-            throw new IllegalArgumentException("Saldo da conta não pode ser nulo.");
+            throw new DadoInvalidoException("Saldo da conta não pode ser nulo.");
         }
         if (contaRepositorio.buscarContaPorNumero(conta.getNumero()) != null) {
-            throw new IllegalArgumentException("Já existe uma conta cadastrada com este número.");
+            throw new ContaNaoEncontradaException("Já existe uma conta cadastrada com este número.");
         }
 
         contaRepositorio.adicionarConta(conta);
     }
 
-    public Conta buscarContaPorNumero(String numero) {
+    public Conta buscarContaPorNumero(String numero) throws ArquivoRepositorioException, DadoInvalidoException {
         if (numero == null || numero.isEmpty()) {
-            throw new IllegalArgumentException("Número da conta não pode ser nulo ou vazio.");
+            throw new DadoInvalidoException("Número da conta não pode ser nulo ou vazio.");
         }
         return contaRepositorio.buscarContaPorNumero(numero);
     }
     
-    public List<Conta> listarContas() {
+    public List<Conta> listarContas() throws ArquivoRepositorioException, DadoInvalidoException {
         return contaRepositorio.listarContas();
     }
 
-    public void depositar(String numeroConta, BigDecimal valor) {
+    public void depositar(String numeroConta, BigDecimal valor) throws ContaNaoEncontradaException, OperacaoNaoPermitidaException, ArquivoRepositorioException, DadoInvalidoException {
         if (numeroConta == null || numeroConta.isEmpty()) {
-            throw new IllegalArgumentException("Número da conta não pode ser nulo ou vazio.");
+            throw new OperacaoNaoPermitidaException("Número da conta não pode ser nulo ou vazio.");
         }
         if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Valor do depósito deve ser maior que zero.");
+            throw new OperacaoNaoPermitidaException("Valor do depósito deve ser maior que zero.");
         }
-
         Conta conta = buscarContaPorNumero(numeroConta);
         if (conta == null) {
-            throw new IllegalArgumentException("Conta não encontrada.");
+            throw new ContaNaoEncontradaException("Conta não encontrada.");
         }
-
         conta.creditar(valor);
         contaRepositorio.atualizarConta(conta);
     }
 
-    public BigDecimal consultarSaldo(String numeroConta) {
+    public BigDecimal consultarSaldo(String numeroConta) throws ContaNaoEncontradaException, ArquivoRepositorioException, DadoInvalidoException {
         if (numeroConta == null || numeroConta.isEmpty()) {
-            throw new IllegalArgumentException("Número da conta não pode ser nulo ou vazio.");
+            throw new ContaNaoEncontradaException("Número da conta não pode ser nulo ou vazio.");
         }
-
         Conta conta = buscarContaPorNumero(numeroConta);
         if (conta == null) {
-            throw new IllegalArgumentException("Conta não encontrada.");
+            throw new ContaNaoEncontradaException("Conta não encontrada.");
         }
-
         return conta.getSaldo();
     }
 
-    public void transferir(String numeroContaOrigem, String numeroContaDestino, BigDecimal valor) {
+    public void transferir(String numeroContaOrigem, String numeroContaDestino, BigDecimal valor) throws ContaNaoEncontradaException, SaldoInsuficienteException, OperacaoNaoPermitidaException, ArquivoRepositorioException, DadoInvalidoException {
         if (numeroContaOrigem == null || numeroContaOrigem.isEmpty()) {
-            throw new IllegalArgumentException("Número da conta de origem não pode ser nulo ou vazio.");
+            throw new OperacaoNaoPermitidaException("Número da conta de origem não pode ser nulo ou vazio.");
         }
         if (numeroContaDestino == null || numeroContaDestino.isEmpty()) {
-            throw new IllegalArgumentException("Número da conta de destino não pode ser nulo ou vazio.");
+            throw new OperacaoNaoPermitidaException("Número da conta de destino não pode ser nulo ou vazio.");
         }
         if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Valor da transferência deve ser maior que zero.");
+            throw new OperacaoNaoPermitidaException("Valor da transferência deve ser maior que zero.");
         }
-
         Conta contaOrigem = buscarContaPorNumero(numeroContaOrigem);
         Conta contaDestino = buscarContaPorNumero(numeroContaDestino);
-
         if (contaOrigem == null) {
-            throw new IllegalArgumentException("Conta de origem não encontrada.");
+            throw new ContaNaoEncontradaException("Conta de origem não encontrada.");
         }
         if (contaDestino == null) {
-            throw new IllegalArgumentException("Conta de destino não encontrada.");
+            throw new ContaNaoEncontradaException("Conta de destino não encontrada.");
         }
-
+        if (contaOrigem.getSaldo().compareTo(valor) < 0) {
+            throw new SaldoInsuficienteException("Saldo insuficiente para transferência.");
+        }
         contaOrigem.debitar(valor);
         contaDestino.creditar(valor);
         contaRepositorio.atualizarConta(contaOrigem);
         contaRepositorio.atualizarConta(contaDestino);
     }
 
-    public void debitar(String numeroConta, BigDecimal valor) {
+    public void debitar(String numeroConta, BigDecimal valor) throws ContaNaoEncontradaException, SaldoInsuficienteException, OperacaoNaoPermitidaException, ArquivoRepositorioException, DadoInvalidoException {
         if (numeroConta == null || numeroConta.isEmpty()) {
-            throw new IllegalArgumentException("Número da conta não pode ser nulo ou vazio.");
+            throw new OperacaoNaoPermitidaException("Número da conta não pode ser nulo ou vazio.");
         }
         if (valor == null || valor.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Valor do saque deve ser maior que zero.");
+            throw new OperacaoNaoPermitidaException("Valor do saque deve ser maior que zero.");
         }
-
         Conta conta = buscarContaPorNumero(numeroConta);
         if (conta == null) {
-            throw new IllegalArgumentException("Conta não encontrada.");
+            throw new ContaNaoEncontradaException("Conta não encontrada.");
         }
-
+        if (conta.getSaldo().compareTo(valor) < 0) {
+            throw new SaldoInsuficienteException("Saldo insuficiente para saque.");
+        }
         conta.debitar(valor);
         contaRepositorio.atualizarConta(conta);
     }
 
-    private String obterProximoNumeroConta() {
+    private String obterProximoNumeroConta() throws ArquivoRepositorioException, DadoInvalidoException {
         List<Conta> contas = listarContas();
         if (contas.isEmpty()) {
-            return "0001"; // Retorna o primeiro código se não houver vendas
+            return "0001";
         }
-        // Obtém o último código de venda e incrementa para o próximo
-        // Assumindo que os códigos de venda são numéricos e formatados como "0001", "0002", etc.
         contas.sort((v1, v2) -> v1.getNumero().compareTo(v2.getNumero()));
         if (contas.size() < 1) {
-            return "0001"; // Retorna o primeiro código se não houver vendas
-        }        
-
+            return "0001";
+        }
         String ultimoCodigo = contas.get(contas.size() - 1).getNumero();
         int proximoNumero = Integer.parseInt(ultimoCodigo) + 1;
-        return String.format("%04d", proximoNumero); // Formata para 4 dígitos
+        return String.format("%04d", proximoNumero);
     }
 }

@@ -6,6 +6,10 @@ import TG.Servicos.ProdutoServico;
 import javax.swing.text.*;
 import java.text.NumberFormat;
 import java.util.Locale;
+import TG.Excecoes.ProdutoJaCadastradoException;
+import TG.Excecoes.ArquivoRepositorioException;
+import TG.Excecoes.DadoInvalidoException;
+import TG.Util.MensagensUtil;
 
 public class ProdutoView extends JFrame {
 
@@ -100,6 +104,12 @@ public class ProdutoView extends JFrame {
                 produtoServico.adicionarProduto(produto);
                 exibirSucesso("Produto cadastrado com sucesso!");
                 limparCampos();
+            } catch (ProdutoJaCadastradoException ex) {
+                exibirErro("Já existe um produto cadastrado com este código.");
+            } catch (ArquivoRepositorioException ex) {
+                exibirErro(MensagensUtil.ERRO_ARQUIVO + ex.getMessage());
+            } catch (DadoInvalidoException ex) {
+                exibirErro(MensagensUtil.DADOS_INVALIDOS + ex.getMessage());
             } catch (Exception e) {
                 exibirErro("Erro ao cadastrar produto: " + e.getMessage());
             }
@@ -118,23 +128,12 @@ public class ProdutoView extends JFrame {
             exibirErro("Preço inválido. Por favor, insira um número válido.");
             return null;
         }
-        if (codigo.isEmpty() || nome.isEmpty() || preco <= 0) {
-            exibirErro("Todos os campos devem ser preenchidos corretamente.");
+        try {
+            return new Produto(codigo, nome, preco);
+        } catch (DadoInvalidoException ex) {
+            exibirErro("Dados inválidos: " + ex.getMessage());
             return null;
         }
-        if (codigo.length() < 3) {
-            exibirErro("Código do produto deve ter pelo menos 3 caracteres.");
-            return null;
-        }
-        if (!codigo.matches("[a-zA-Z0-9]+")) {
-            exibirErro("Código do produto deve conter apenas letras e números.");
-            return null;
-        }
-        if (nome.length() < 3) {
-            exibirErro("Nome do produto deve ter pelo menos 3 caracteres.");
-            return null;
-        }
-        return new Produto(codigo, nome, preco);
     }
 
     private void cancelar() {

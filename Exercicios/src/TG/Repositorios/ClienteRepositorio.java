@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import TG.Excecoes.ArquivoRepositorioException;
+import TG.Excecoes.DadoInvalidoException;
 import TG.Modelos.Cliente;
 import TG.Modelos.Conta;
 
@@ -19,46 +21,48 @@ public class ClienteRepositorio {
     
     private String caminhoArquivo = "Exercicios/src/TG/Arquivos/clientes.txt";
     
-    public void adicionarCliente(Cliente cliente) {
+    public void adicionarCliente(Cliente cliente) throws ArquivoRepositorioException, DadoInvalidoException {
         if (cliente == null) {
-            throw new IllegalArgumentException("Cliente não pode ser nulo");
+            throw new DadoInvalidoException("Cliente não pode ser nulo");
         }
-          
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(caminhoArquivo, true))) {
             writer.append(cliente.toString());
             writer.newLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ArquivoRepositorioException("Erro ao adicionar cliente ao arquivo.", e);
         }
     }
     
-    public Cliente buscarClientePorCPF(String cpf) {
+    public Cliente buscarClientePorCPF(String cpf) throws ArquivoRepositorioException, DadoInvalidoException {
         if (cpf == null || cpf.isEmpty()) {
-            throw new IllegalArgumentException("CPF não pode ser nulo ou vazio");
+            throw new DadoInvalidoException("CPF não pode ser nulo ou vazio");
         }
-
         List<Cliente> clientes = listarClientes();
-        
         for (Cliente cliente : clientes) {
              if (cliente.getCpf().equals(cpf)) {
                  return cliente;
              }
         }
-        return null; // Retornar o cliente encontrado ou null se não encontrado
+        return null;
     }
 
-    public List<Cliente> listarClientes() {
+    public List<Cliente> listarClientes() throws ArquivoRepositorioException, DadoInvalidoException {
         List<Cliente> clientes = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(caminhoArquivo))) {
             String linha;
             while ((linha = reader.readLine()) != null) {
-                Cliente cliente = parseCliente(linha);
+                Cliente cliente;
+                try {
+                    cliente = parseCliente(linha);
+                } catch (Exception e) {
+                    throw new DadoInvalidoException("Erro ao fazer parsing do cliente: " + e.getMessage());
+                }
                 if (cliente != null) {
                     clientes.add(cliente);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ArquivoRepositorioException("Erro ao ler clientes do arquivo.", e);
         }
         return clientes;
     }
@@ -77,8 +81,18 @@ public class ClienteRepositorio {
         String contaAux = partes[3].split("=")[1].trim(); // Se necessário, pode ser processado
         
         ContaRepositorio contaRepositorio = new ContaRepositorio();
-        Conta conta = contaRepositorio.buscarContaPorNumero(contaAux);
-        return new Cliente(cpf, nome, email, conta);
+        Conta conta = null;
+        try {
+            conta = contaRepositorio.buscarContaPorNumero(contaAux);
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar conta: " + e.getMessage());
+        }
+        try {
+            return new Cliente(cpf, nome, email, conta);
+        } catch (Exception e) {
+            System.err.println("Erro ao criar cliente: " + e.getMessage());
+            return null;
+        }
     }
     
 }

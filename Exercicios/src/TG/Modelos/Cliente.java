@@ -1,14 +1,16 @@
 package TG.Modelos;
 
+import TG.Excecoes.DadoInvalidoException;
+
 public class Cliente {
     private String cpf;
     private String nome;
     private String email;
     private Conta conta;
 
-    public Cliente(String cpf, String nome, String email, Conta conta) {
+    public Cliente(String cpf, String nome, String email, Conta conta) throws DadoInvalidoException {
         if (cpf == null || nome == null || email == null) {
-            throw new IllegalArgumentException("CPF, nome e email não podem ser nulos.");
+            throw new DadoInvalidoException("CPF, nome e email não podem ser nulos.");
         }
         this.cpf = cpf;
         this.nome = nome;
@@ -16,9 +18,9 @@ public class Cliente {
         this.conta = conta;
     }
 
-    public Cliente(String cpf) {
+    public Cliente(String cpf) throws DadoInvalidoException {
         if (cpf == null) {
-            throw new IllegalArgumentException("CPF não pode ser nulo.");
+            throw new DadoInvalidoException("CPF não pode ser nulo.");
         }
         this.cpf = cpf;
     }
