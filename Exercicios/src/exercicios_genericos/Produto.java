@@ -18,4 +18,8 @@ public class Produto {
     public String getNome() {
         return nome;
     }
+
+    public int getQtdEstoque() {
+        return qtdEstoque;
+    }
 }

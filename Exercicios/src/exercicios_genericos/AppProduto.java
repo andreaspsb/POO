@@ -11,18 +11,22 @@ public class AppProduto {
             Produto produto3 = new Produto("Produto C", "003", 0);
 
             Map<String, Produto> produtosMap = new HashMap<>();
+            
             if (produtosMap.containsKey(produto1.getCodigo())) {
                 throw new ProdutoJaCadastradoException("Produto já cadastrado: " + produto1.getNome());
             }
             produtosMap.put(produto1.getCodigo(), produto1);
+
             if (produtosMap.containsKey(produto2.getCodigo())) {
                 throw new ProdutoJaCadastradoException("Produto já cadastrado: " + produto2.getNome());
             }
             produtosMap.put(produto2.getCodigo(), produto2);
+
             if (produtosMap.containsKey(produto3.getCodigo())) {
                 throw new ProdutoJaCadastradoException("Produto já cadastrado: " + produto3.getNome());
             }
             produtosMap.put(produto3.getCodigo(), produto3);
+
             System.out.println("Produtos cadastrados com sucesso!");
 
             // Exibir os produtos cadastrados
