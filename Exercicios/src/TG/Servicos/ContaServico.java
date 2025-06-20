@@ -5,11 +5,15 @@ import java.util.List;
 
 import TG.Modelos.Conta;
 import TG.Repositorios.ContaRepositorio;
+import TG.Repositorios.OperacoesMonetizacaoRepositorio;
 import TG.Excecoes.ContaNaoEncontradaException;
 import TG.Excecoes.SaldoInsuficienteException;
 import TG.Excecoes.OperacaoNaoPermitidaException;
 import TG.Excecoes.ArquivoRepositorioException;
 import TG.Excecoes.DadoInvalidoException;
+import TG.DTOs.OperacaoMonetizacaoDTO;
+import TG.DTOs.OperacaoMonetizacaoDTO.TipoOperacao;
+import java.time.LocalDateTime;
 
 /**
  * Classe responsável por gerenciar os serviços relacionados a contas.
@@ -18,9 +22,11 @@ import TG.Excecoes.DadoInvalidoException;
 public class ContaServico {
 
     private ContaRepositorio contaRepositorio;
+    private OperacoesMonetizacaoRepositorio operacoesMonetizacaoRepositorio;    
 
     public ContaServico() {
         this.contaRepositorio = new ContaRepositorio();
+        this.operacoesMonetizacaoRepositorio = new OperacoesMonetizacaoRepositorio();
     }
     
     public void adicionarConta() throws ArquivoRepositorioException, DadoInvalidoException {
@@ -77,6 +83,10 @@ public class ContaServico {
         }
         conta.creditar(valor);
         contaRepositorio.atualizarConta(conta);
+        // Registrar a operação de depósito no repositório de operações monetárias
+        operacoesMonetizacaoRepositorio.registrarOperacao(
+            new OperacaoMonetizacaoDTO(TipoOperacao.DEPOSITO, valor.doubleValue(), numeroConta, null, LocalDateTime.now())
+        );
     }
 
     public BigDecimal consultarSaldo(String numeroConta) throws ContaNaoEncontradaException, ArquivoRepositorioException, DadoInvalidoException {
@@ -115,6 +125,10 @@ public class ContaServico {
         contaDestino.creditar(valor);
         contaRepositorio.atualizarConta(contaOrigem);
         contaRepositorio.atualizarConta(contaDestino);
+        // Registrar a operação de transferência no repositório de operações monetárias
+        operacoesMonetizacaoRepositorio.registrarOperacao(
+            new OperacaoMonetizacaoDTO(TipoOperacao.TRANSFERENCIA, valor.doubleValue(), numeroContaOrigem, numeroContaDestino, LocalDateTime.now())
+        );
     }
 
     public void debitar(String numeroConta, BigDecimal valor) throws ContaNaoEncontradaException, SaldoInsuficienteException, OperacaoNaoPermitidaException, ArquivoRepositorioException, DadoInvalidoException {
@@ -147,5 +161,9 @@ public class ContaServico {
         String ultimoCodigo = contas.get(contas.size() - 1).getNumero();
         int proximoNumero = Integer.parseInt(ultimoCodigo) + 1;
         return String.format("%04d", proximoNumero);
+    }
+
+    public List<OperacaoMonetizacaoDTO> listarOperacoesMonetizacao() throws ArquivoRepositorioException {
+        return operacoesMonetizacaoRepositorio.listarOperacoesMonetizacao();
     }
 }
