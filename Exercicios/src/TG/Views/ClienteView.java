@@ -196,10 +196,14 @@ public class ClienteView extends JFrame {
     }
 
     private void cancelar() {
-        boolean preenchido = !txtCpf.getText().trim().isEmpty() ||
+        String cpf = txtCpf.getText().replaceAll("[.\\-_]", "").trim();
+        boolean cpfPreenchido = !cpf.isEmpty() && cpf.matches(".*\\d.*");
+        String conta = txtConta.getText().replaceAll("[_]", "").trim();
+        boolean contaPreenchida = !conta.isEmpty() && conta.matches(".*\\d.*");
+        boolean preenchido = cpfPreenchido ||
                              !txtNome.getText().trim().isEmpty() ||
                              !txtEmail.getText().trim().isEmpty() ||
-                             !txtConta.getText().trim().isEmpty();
+                             contaPreenchida;
         if (preenchido) {
             int resp = JOptionPane.showConfirmDialog(this, "Há campos preenchidos. Deseja realmente cancelar?", "Confirmação", JOptionPane.YES_NO_OPTION);
             if (resp != JOptionPane.YES_OPTION) {
